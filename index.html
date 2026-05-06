@@ -360,6 +360,18 @@ const SUPABASE_KEY = 'sb_publishable_04XlLXI2KxzGPq8Wp1kxmg_ccFAzvEg';
 const { createClient } = window.supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ── TEMA DEL DÍA — función helper (definida temprano para uso en render) ──
+function getTema(si){ 
+  const T={
+    0:{icon:'🎨'},1:{icon:'🎨'},
+    2:{icon:'💰'},3:{icon:'💰'},
+    4:{icon:'🌿'},5:{icon:'🌿'},
+    6:{icon:'💡'},7:{icon:'💡'},
+    8:{icon:'⚡'},9:{icon:'⚡'}
+  };
+  return T[si]||{icon:'—'};
+}
+
 // ══════════════════════════════════════════════════════════════════
 // DATOS BASE
 // ══════════════════════════════════════════════════════════════════
@@ -401,7 +413,7 @@ const TEMA_DIA = {
   9: {id:'ejecucion', icon:'⚡', nombre:'Ejecución',   color:'#3A7A8A', desc:'Día de Agua Yin — activa tu Robo de Riqueza (RR). Alta energía de acción. Muévete, capta, ejecuta — pero cuida los excesos.'},
 };
 
-function getTema(si){ return TEMA_DIA[si] || {id:'neut',icon:'—',nombre:'Neutro',color:'#B09070',desc:'Día sin tema dominante claro.'}; }
+function getTema(si){ return TEMA_DIA[si]||{id:'neut',icon:'—',nombre:'Neutro',color:'#B09070',desc:'Día sin tema dominante claro.',nombre:'Neutro'}; }
 const IS_NOBLEMAN  = {3:true,5:true};
 const IS_WEALTH    = {2:true,3:true};
 const IS_LP        = {7:true};
@@ -662,7 +674,7 @@ function renderCalendario(){
       <div class="cal-rama" style="color:${sel?'var(--gold-l)':txColor}">${RAMA_C[cel.db]}</div>
       <div class="cal-ofc" style="color:${sel?'#CCC':txColor}">${OFC_C[cel.oi]}</div>
       ${tieneDiario?`<div style="position:absolute;bottom:1px;right:2px;font-size:6px">📝</div>`:''}
-      <div style="position:absolute;bottom:1px;left:2px;font-size:7px;opacity:.7">${getTema(analyzeDay(2026,state.mes,cel.d).si).icon}</div>
+      <div style="position:absolute;bottom:1px;left:2px;font-size:7px;opacity:.7">${getTema(cel.si).icon}</div>
     </div>`;
   }).join('');
 }
