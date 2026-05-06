@@ -353,9 +353,13 @@ function verificar(){
 // SUPABASE CONFIG
 // ══════════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://crnvavaaxsoesabipcho.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInJlZiI6ImNybnZhdmFheHNvZXNhYmlwY2hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTc1OTQsImV4cCI6MjA4OTQ5MzU5NH0.P00sHTHvoZBvaL7WnAGdHWQqu9kUvXexLQ9B0IH1dR4';
-const { createClient } = window.supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = 'sb_publishable_04XlLXI2KxzGPq8Wp1kxmg_ccFAzvEg';
+let db = null;
+try {
+  if(window.supabase && window.supabase.createClient){
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e){ console.warn('Supabase init error:', e); }
 
 // ══════════════════════════════════════════════════════════════════
 // DATOS BASE
@@ -384,6 +388,21 @@ const CONS_Q  = ['buen','evit','buen','buen','evit','exce','buen','buen','evit',
 const CONS_ACT= ['Auspiciosa general','Evitar — puede generar disputas','Buena para construcción y negocios','Muy auspiciosa — actividades importantes','Negativa — solo viajes o cosecha','★ Contratos, FS, remodelación — ayuda de nobles','Construcción, cobros — no matrimonio','Comercio, riqueza, FS','Estrella desastre — evitar todo negocio','Actividades internas y académicas','Pura negativa — ninguna actividad','Solo cobro de deudas','★ Nuevo negocio, construcción, activos','★ Firma contratos, apertura oficial, prosperidad','Malo apertura — bueno viajes y remodelaciones','★ Sin atributos negativos — guardián de riqueza','Matrimonio y asuntos externos/públicos','Extremadamente feroz — evitar todo','Construcción, tierra, matrimonio — benevolente','Altamente negativa — evitar todo','FS, viajes, remodelación, fama y logros','Uso limitado — solo FS o groundbreaking','Negativa — no matrimonio ni construcción','Evitar activación FS','Negociaciones, aperturas oficiales, claridad','★ Extremadamente positiva — todos los negocios','Negativa para mayoría de actividades','Tolerancia y acuerdo — para cerrar conflictos'];
 
 const P_Q = {0:'evit',1:'buen',2:'exce',3:'evit',4:'exce',5:'neut',6:'evit',7:'buen',8:'exce',9:'exce',10:'neut',11:'exce'};
+// ── TEMA DEL DÍA — 壬子 Day Master ──────────────────────────────
+const TEMA_DIA = {
+  0:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yang activa tu Comiendo Dios. Crea contenido, desarrolla proyectos y nuevas ideas en EI.'},
+  1:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yin activa tu Recurso Directo. Creatividad con sustancia — planifica y construye.'},
+  2:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yang activa tu Dinero Directo. Máxima activación de riqueza. Ideal para captaciones y cierres.'},
+  3:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yin activa tu Dinero Indirecto. Bueno para análisis financiero y estrategia económica.'},
+  4:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yang activa tu 7 Muertes. Resuelve conflictos y reorganiza procesos internos de EI.'},
+  5:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yin activa tu Oficial Directo. Estructura, disciplina y orden en tu sistema de trabajo.'},
+  6:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yang activa tu Recurso Directo. Claridad mental elevada. Planifica estrategia y estudia el mercado.'},
+  7:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yin activa tu Recurso Indirecto. Investiga y profundiza en estrategia inmobiliaria.'},
+  8:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yang activa tu Amigo. Día de movimiento y colaboración con tu equipo de agentes.'},
+  9:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yin activa tu Robo de Riqueza. Alta energía de acción — muévete, capta y ejecuta.'}
+};
+function getTema(si){ return TEMA_DIA[si]||{icon:'—',nombre:'Neutro',color:'#B09070',desc:''}; }
+
 const IS_NOBLEMAN  = {3:true,5:true};
 const IS_WEALTH    = {2:true,3:true};
 const IS_LP        = {7:true};
@@ -507,13 +526,15 @@ function fmtFecha(m,d){ return `2026-${String(m).padStart(2,'0')}-${String(d).pa
 // SUPABASE OPERACIONES
 // ══════════════════════════════════════════════════════════════════
 async function cargarEntradas(){
+  if(!db){ console.warn('Supabase no disponible'); return; }
   try{
     const {data,error}=await db.from('tong_shu_diario').select('*').order('fecha');
     if(!error&&data){ data.forEach(e=>{ state.entradas[e.fecha]=e; }); }
-  }catch(e){ console.log('Error cargando entradas:',e); }
+  }catch(e){ console.log('Error cargando:',e); }
 }
 
 async function guardarEntrada(fecha, entry){
+  if(!db) return false;
   try{
     const existe = state.entradas[fecha];
     if(existe){
@@ -528,6 +549,7 @@ async function guardarEntrada(fecha, entry){
 }
 
 async function borrarEntrada(fecha){
+  if(!db) return false;
   try{
     await db.from('tong_shu_diario').delete().eq('fecha',fecha);
     delete state.entradas[fecha];
@@ -675,6 +697,10 @@ function renderDetalle(){
   // Actividades
   const acts=ACT[d.oi]||ACT[3];
 
+  // Tema del día — calculado antes del template literal
+  const tema=getTema(d.si);
+  const temaHtml='<div style="margin-bottom:10px;padding:12px 14px;border-radius:10px;background:'+tema.color+'22;border:2px solid '+tema.color+'44"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:20px">'+tema.icon+'</span><div><div style="font-size:9px;color:'+tema.color+';font-weight:700;letter-spacing:1px;font-family:sans-serif">TEMA DEL DÍA</div><div style="font-size:15px;font-weight:800;color:'+tema.color+';font-family:sans-serif">'+tema.nombre+'</div></div></div><div style="font-size:12px;color:var(--txt-s);line-height:1.6;font-family:sans-serif">'+tema.desc+'</div></div>';
+
   // Diario
   const ds=state.diarioState;
 
@@ -687,6 +713,7 @@ function renderDetalle(){
         </div>
         <div class="det-badge" style="background:${rs.bd}">${rs.lb}</div>
       </div>
+      ${temaHtml}
       <div class="camino-banner" style="background:${d.isYel?'var(--prec-b)':'var(--evit-b)'};color:${d.isYel?'var(--gold-d)':'var(--evit-t)'};border:1px solid ${d.isYel?'var(--gold)':'var(--evit-d)'}">
         ${d.isYel?`☀ CAMINO AMARILLO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`:`🖤 CAMINO NEGRO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`}
       </div>
