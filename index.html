@@ -328,7 +328,6 @@
 function verificar(){
   const pwd=document.getElementById('pwd-input').value;
   if(pwd==='Zulema2026$$'){
-    sessionStorage.setItem('ts_auth','1');
     document.getElementById('login-screen').style.display='none';
     document.getElementById('pwd-input').value='';
   } else {
@@ -338,10 +337,6 @@ function verificar(){
     document.getElementById('pwd-input').focus();
     setTimeout(()=>err.textContent='',3000);
   }
-}
-// Verificar si ya estaba autenticada en esta sesión
-if(sessionStorage.getItem('ts_auth')==='1'){
-  document.getElementById('login-screen').style.display='none';
 }
 
 // ══════════════════════════════════════════════════════════════════
