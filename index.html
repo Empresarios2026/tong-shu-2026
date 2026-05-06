@@ -238,7 +238,10 @@
     <span class="hdr-tag">Caballo 马</span>
     <span class="hdr-tag">Horas</span>
   </div>
-  <button class="hdr-btn" onclick="togglePerfil()">▼ Mi perfil metafísico</button>
+  <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+    <button class="hdr-btn" onclick="togglePerfil()">▼ Mi perfil metafísico</button>
+    <button class="hdr-btn" onclick="descargarCSV()" style="background:rgba(200,169,110,.2);border-color:rgba(200,169,110,.5)">⬇️ Descargar CSV</button>
+  </div>
 </div>
 
 <!-- PERFIL -->
@@ -981,23 +984,43 @@ async function guardarDiario(){
   const fecha=fmtFecha(state.mes,state.dia);
   const da=analyzeDay(2026,state.mes,state.dia);
   const ds=state.diarioState;
-  ds.nota=document.getElementById('nota-txt')?.value||ds.nota;
+  // Leer nota del textarea directamente
+  const notaTxt=document.getElementById('nota-txt');
+  if(notaTxt) ds.nota=notaTxt.value;
   const btn=document.querySelector('.btn-save');
   if(btn){ btn.textContent='⟳ Guardando...'; btn.disabled=true; }
   const entry={
-    dia_rama:RAMA_ES[da.db], dia_oficial:OFC_ES[da.oi],
-    prediccion:da.rating, estrellas:ds.estrellas,
-    categoria:ds.cat,
+    dia_rama:RAMA_ES[da.db],
+    dia_oficial:OFC_ES[da.oi],
+    prediccion:da.rating,
+    estrellas:ds.estrellas||null,
+    categoria:ds.cat||'General',
     coincidio:ds.coincide===true?'si':ds.coincide===false?'no':ds.coincide==='parcial'?'parcial':null,
-    nota:ds.nota
+    nota:ds.nota||null
   };
-  const ok=await guardarEntrada(fecha,entry);
   const msg=document.getElementById('save-msg');
-  if(ok){
-    ds.guardado=true;
-    if(msg){ msg.textContent='✅ Guardado en tu base de datos'; msg.style.background='rgba(100,160,50,.2)'; msg.style.color='#8BC34A'; msg.style.border='1px solid rgba(100,160,50,.4)'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),3000); }
-  } else {
-    if(msg){ msg.textContent='❌ Error al guardar — verifica conexión'; msg.style.background='rgba(180,50,50,.2)'; msg.style.color='var(--evit-t)'; msg.style.border='1px solid rgba(180,50,50,.4)'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),4000); }
+  try{
+    const existe=state.entradas[fecha];
+    let error;
+    if(existe){
+      const res=await db.from('tong_shu_diario').update({...entry,updated_at:new Date().toISOString()}).eq('fecha',fecha);
+      error=res.error;
+      if(!error) state.entradas[fecha]={...state.entradas[fecha],...entry};
+    } else {
+      const res=await db.from('tong_shu_diario').insert([{...entry,fecha}]).select();
+      error=res.error;
+      if(!error&&res.data) state.entradas[fecha]=res.data[0];
+    }
+    if(error){
+      console.log('Supabase error:',error);
+      if(msg){ msg.textContent='❌ Error: '+error.message; msg.style.background='rgba(180,50,50,.2)'; msg.style.color='#EF9A9A'; msg.style.border='1px solid rgba(180,50,50,.4)'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),5000); }
+    } else {
+      ds.guardado=true;
+      if(msg){ msg.textContent='✅ Guardado correctamente'; msg.style.background='rgba(100,160,50,.2)'; msg.style.color='#8BC34A'; msg.style.border='1px solid rgba(100,160,50,.4)'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),3000); }
+    }
+  }catch(e){
+    console.log('Error:',e);
+    if(msg){ msg.textContent='❌ Error de conexión: '+e.message; msg.style.background='rgba(180,50,50,.2)'; msg.style.color='#EF9A9A'; msg.style.border='1px solid rgba(180,50,50,.4)'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),5000); }
   }
   if(btn){ btn.textContent=ds.guardado?'✓ Actualizar nota':'💾 Guardar nota'; btn.disabled=false; }
   renderCalendario();
