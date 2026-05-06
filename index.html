@@ -285,6 +285,9 @@
       <span>☀ Amarillo</span><span>🔥 Riqueza</span><span>贵 Noble</span>
       <span>🌸 Flor</span><span>合 Combo</span><span>文 WenChang</span><span>马 YiMa</span><span>✕ Ruptura</span>
     </div>
+    <div class="cal-leyenda" style="margin-top:4px;padding-top:4px;border-top:1px solid var(--cream-d)">
+      <span>💡 Perspicacia</span><span>🎨 Creación</span><span>⚡ Ejecución</span><span>💰 Riqueza-día</span><span>🌿 Sanación</span>
+    </div>
   </div>
 
   <!-- LEYENDA -->
@@ -383,7 +386,22 @@ const CONS_ES = ['Cuerno','Cuello','Cimiento','Cuarto','Corazón','Cola','Cesto'
 const CONS_Q  = ['buen','evit','buen','buen','evit','exce','buen','buen','evit','neut','evit','evit','exce','exce','neut','exce','buen','evit','buen','evit','buen','neut','evit','evit','buen','exce','evit','neut'];
 const CONS_ACT= ['Auspiciosa general','Evitar — puede generar disputas','Buena para construcción y negocios','Muy auspiciosa — actividades importantes','Negativa — solo viajes o cosecha','★ Contratos, FS, remodelación — ayuda de nobles','Construcción, cobros — no matrimonio','Comercio, riqueza, FS','Estrella desastre — evitar todo negocio','Actividades internas y académicas','Pura negativa — ninguna actividad','Solo cobro de deudas','★ Nuevo negocio, construcción, activos','★ Firma contratos, apertura oficial, prosperidad','Malo apertura — bueno viajes y remodelaciones','★ Sin atributos negativos — guardián de riqueza','Matrimonio y asuntos externos/públicos','Extremadamente feroz — evitar todo','Construcción, tierra, matrimonio — benevolente','Altamente negativa — evitar todo','FS, viajes, remodelación, fama y logros','Uso limitado — solo FS o groundbreaking','Negativa — no matrimonio ni construcción','Evitar activación FS','Negociaciones, aperturas oficiales, claridad','★ Extremadamente positiva — todos los negocios','Negativa para mayoría de actividades','Tolerancia y acuerdo — para cerrar conflictos'];
 
-const P_Q = {0:'evit',1:'buen',2:'exce',3:'evit',4:'exce',5:'neut',6:'evit',7:'buen',8:'exce',9:'exce',10:'neut',11:'exce'};
+// ── TEMA DEL DÍA — 壬子 Day Master ──────────────────────────────
+// Basado en el tallo del día y el 10 Dios activado
+const TEMA_DIA = {
+  0: {id:'creacion',  icon:'🎨', nombre:'Creación',    color:'#5A7A2A', desc:'Día para desarrollar proyectos, generar contenido EI y construir nuevas ideas. Tu energía Madera Yang activa tu Comiendo Dios (CD) — fluye la creatividad.'},
+  1: {id:'creacion',  icon:'🎨', nombre:'Creación',    color:'#5A7A2A', desc:'Día para desarrollar proyectos, generar contenido EI y construir nuevas ideas. Tu energía Madera Yin activa tu Recurso Directo (RD) — creatividad con sustancia.'},
+  2: {id:'riqueza',   icon:'💰', nombre:'Perspicacia + Riqueza', color:'#8B6914', desc:'Día de Fuego Yang — activa tu Dinero Directo (DD). Máxima activación de riqueza. Ideal para captaciones, cierres y decisiones financieras de EI.'},
+  3: {id:'riqueza',   icon:'💰', nombre:'Perspicacia + Riqueza', color:'#8B6914', desc:'Día de Fuego Yin — activa tu Dinero Indirecto (DI). Bueno para análisis financiero, inversiones y estrategia económica de EI.'},
+  4: {id:'sanacion',  icon:'🌿', nombre:'Sanación',    color:'#1A5A6A', desc:'Día de Tierra Yang — activa tu 7 Muertes (7M). Usa este día para resolver conflictos, reorganizar procesos internos de EI y liberar lo que no funciona.'},
+  5: {id:'sanacion',  icon:'🌿', nombre:'Sanación',    color:'#1A5A6A', desc:'Día de Tierra Yin — activa tu Oficial Directo (OD). Bueno para estructura, disciplina y ordenar tu sistema de trabajo en EI.'},
+  6: {id:'perspicacia',icon:'💡',nombre:'Perspicacia', color:'#4A148C', desc:'Día de Metal Yang — activa tu Recurso Directo (RD). Claridad mental elevada. Ideal para planificar estrategia, estudiar mercado y tomar decisiones importantes.'},
+  7: {id:'perspicacia',icon:'💡',nombre:'Perspicacia', color:'#4A148C', desc:'Día de Metal Yin — activa tu Recurso Indirecto (RI). Excelente para investigar, aprender y profundizar en metafísica o estrategia inmobiliaria.'},
+  8: {id:'ejecucion', icon:'⚡', nombre:'Ejecución',   color:'#3A7A8A', desc:'Día de Agua Yang — activa tu Amigo (A). Día de movimiento y colaboración. Bueno para trabajo en equipo con tus agentes y actividades externas.'},
+  9: {id:'ejecucion', icon:'⚡', nombre:'Ejecución',   color:'#3A7A8A', desc:'Día de Agua Yin — activa tu Robo de Riqueza (RR). Alta energía de acción. Muévete, capta, ejecuta — pero cuida los excesos.'},
+};
+
+function getTema(si){ return TEMA_DIA[si] || {id:'neut',icon:'—',nombre:'Neutro',color:'#B09070',desc:'Día sin tema dominante claro.'}; }
 const IS_NOBLEMAN  = {3:true,5:true};
 const IS_WEALTH    = {2:true,3:true};
 const IS_LP        = {7:true};
@@ -644,6 +662,7 @@ function renderCalendario(){
       <div class="cal-rama" style="color:${sel?'var(--gold-l)':txColor}">${RAMA_C[cel.db]}</div>
       <div class="cal-ofc" style="color:${sel?'#CCC':txColor}">${OFC_C[cel.oi]}</div>
       ${tieneDiario?`<div style="position:absolute;bottom:1px;right:2px;font-size:6px">📝</div>`:''}
+      <div style="position:absolute;bottom:1px;left:2px;font-size:7px;opacity:.7">${getTema(analyzeDay(2026,state.mes,cel.d).si).icon}</div>
     </div>`;
   }).join('');
 }
@@ -687,6 +706,21 @@ function renderDetalle(){
         </div>
         <div class="det-badge" style="background:${rs.bd}">${rs.lb}</div>
       </div>
+
+      <!-- TEMA DEL DÍA -->
+      ${(()=>{
+        const t=getTema(d.si);
+        return `<div style="margin-bottom:10px;padding:12px 14px;border-radius:10px;background:${t.color}18;border:2px solid ${t.color}40">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+            <span style="font-size:22px">${t.icon}</span>
+            <div>
+              <div style="font-size:9px;color:${t.color};font-weight:700;letter-spacing:1px;font-family:sans-serif">TEMA DEL DÍA</div>
+              <div style="font-size:16px;font-weight:800;color:${t.color};font-family:sans-serif">${t.nombre}</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:#555;line-height:1.6;font-family:sans-serif">${t.desc}</div>
+        </div>`;
+      })()}
       <div class="camino-banner" style="background:${d.isYel?'var(--prec-b)':'var(--evit-b)'};color:${d.isYel?'var(--gold-d)':'var(--evit-t)'};border:1px solid ${d.isYel?'var(--gold)':'var(--evit-d)'}">
         ${d.isYel?`☀ CAMINO AMARILLO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`:`🖤 CAMINO NEGRO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`}
       </div>
