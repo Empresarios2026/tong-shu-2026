@@ -51,7 +51,7 @@
   .perfil-val { font-size: 11px; font-weight: 700; color: #EEE; margin-top: 2px; font-family: sans-serif; }
 
   /* CONTENIDO */
-  .content { padding: 12px 12px 40px; }
+  .content { padding: 12px 12px 100px; }
 
   /* MES SELECTOR */
   .mes-scroll { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 12px; scrollbar-width: none; }
@@ -324,13 +324,20 @@
   </div>
 </div>
 
+<!-- BARRA CSV FIJA -->
+<div style="position:fixed;bottom:0;left:0;right:0;max-width:820px;margin:0 auto;padding:10px 12px;background:linear-gradient(135deg,#3D2314,#6B3F1E);border-top:2px solid rgba(200,169,110,.3);z-index:100">
+  <button onclick="descargarCSV()" style="width:100%;padding:12px;border-radius:9px;background:linear-gradient(135deg,#8B6914,#C8A96E);border:none;color:white;font-size:14px;font-weight:800;cursor:pointer;font-family:sans-serif">
+    ⬇️ Descargar base de datos (CSV)
+  </button>
+</div>
+
 <script>
 // ══════════════════════════════════════════════════════════════════
 // ACCESO CON CONTRASEÑA
 // ══════════════════════════════════════════════════════════════════
 function verificar(){
   const pwd=document.getElementById('pwd-input').value;
-  if(pwd==='Zulema2026$$'){
+  if(pwd==='zgy$'){
     document.getElementById('login-screen').style.display='none';
     document.getElementById('pwd-input').value='';
   } else {
@@ -347,7 +354,8 @@ function verificar(){
 // ══════════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://crnvavaaxsoesabipcho.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInJlZiI6ImNybnZhdmFheHNvZXNhYmlwY2hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTc1OTQsImV4cCI6MjA4OTQ5MzU5NH0.P00sHTHvoZBvaL7WnAGdHWQqu9kUvXexLQ9B0IH1dR4';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const { createClient } = window.supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════════════════════════════
 // DATOS BASE
