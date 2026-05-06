@@ -934,8 +934,11 @@ function selDia(d){
     const e=state.entradas[fecha];
     if(e){
       state.diarioState={
-        nota:e.nota||'', estrellas:e.estrellas||0,
-        cat:e.categoria||'General', coincide:e.coincidio||null, guardado:true
+        nota:e.nota||'',
+        estrellas:e.estrellas||0,
+        cat:e.categoria||'General',
+        coincide:e.coincidio==='si'?true:e.coincidio==='no'?false:e.coincidio==='parcial'?'parcial':null,
+        guardado:true
       };
     } else {
       state.diarioState={nota:'',estrellas:0,cat:'General',coincide:null,guardado:false};
@@ -1021,7 +1024,6 @@ function toggleHistorial(){
 // INICIO
 // ══════════════════════════════════════════════════════════════════
 async function init(){
-  // Detectar mes actual
   const hoy=new Date();
   if(hoy.getFullYear()===2026){
     const m=hoy.getMonth()+1;
@@ -1029,7 +1031,21 @@ async function init(){
   }
   renderAll();
   await cargarEntradas();
-  renderAll(); // re-render con entradas cargadas
+  // Si hay un día seleccionado, actualizar el estado del diario con los datos cargados
+  if(state.dia){
+    const fecha=fmtFecha(state.mes,state.dia);
+    const e=state.entradas[fecha];
+    if(e){
+      state.diarioState={
+        nota:e.nota||'',
+        estrellas:e.estrellas||0,
+        cat:e.categoria||'General',
+        coincide:e.coincidio==='si'?true:e.coincidio==='no'?false:e.coincidio==='parcial'?'parcial':null,
+        guardado:true
+      };
+    }
+  }
+  renderAll();
 }
 
 init();
