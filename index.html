@@ -6,7 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Tong Shu 2026 · Zulema</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg:       #FAF6EF;
@@ -1106,7 +1105,26 @@ async function init(){
   renderAll();
 }
 
-init();
+// Cargar Supabase dinámicamente y luego iniciar
+function cargarSupabaseYIniciar(){
+  const script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  script.onload=function(){
+    try{
+      if(window.supabase&&window.supabase.createClient){
+        db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+      }
+    }catch(e){ console.warn('Supabase error:',e); }
+    init();
+  };
+  script.onerror=function(){
+    console.warn('Supabase CDN no cargó — calendario funciona sin diario');
+    init();
+  };
+  document.head.appendChild(script);
+}
+
+document.addEventListener('DOMContentLoaded', cargarSupabaseYIniciar);
 </script>
 </body>
 </html>
