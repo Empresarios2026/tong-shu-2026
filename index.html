@@ -357,8 +357,11 @@ function verificar(){
 // ══════════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://crnvavaaxsoesabipcho.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_04XlLXI2KxzGPq8Wp1kxmg_ccFAzvEg';
-const { createClient } = window.supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+let db = null;
+try {
+  const { createClient } = window.supabase;
+  db = createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) { console.log('Supabase no disponible:', e); }
 
 // ── TEMA DEL DÍA — función helper (definida temprano para uso en render) ──
 function getTema(si){ 
@@ -537,6 +540,7 @@ function fmtFecha(m,d){ return `2026-${String(m).padStart(2,'0')}-${String(d).pa
 // SUPABASE OPERACIONES
 // ══════════════════════════════════════════════════════════════════
 async function cargarEntradas(){
+  if(!db) return;
   try{
     const {data,error}=await db.from('tong_shu_diario').select('*').order('fecha');
     if(!error&&data){ data.forEach(e=>{ state.entradas[e.fecha]=e; }); }
@@ -544,6 +548,7 @@ async function cargarEntradas(){
 }
 
 async function guardarEntrada(fecha, entry){
+  if(!db) return false;
   try{
     const existe = state.entradas[fecha];
     if(existe){
@@ -558,6 +563,7 @@ async function guardarEntrada(fecha, entry){
 }
 
 async function borrarEntrada(fecha){
+  if(!db) return false;
   try{
     await db.from('tong_shu_diario').delete().eq('fecha',fecha);
     delete state.entradas[fecha];
@@ -1125,7 +1131,7 @@ async function init(){
   renderAll();
 }
 
-init();
+document.addEventListener('DOMContentLoaded', ()=>{ init(); });
 </script>
 </body>
 </html>
