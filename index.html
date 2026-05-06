@@ -208,7 +208,22 @@
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- PANTALLA DE ACCESO -->
+<div id="login-screen" style="position:fixed;inset:0;background:linear-gradient(135deg,#3D2314,#6B3F1E);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px">
+  <div style="background:#FFFDF9;border-radius:16px;padding:32px 24px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+    <div style="font-size:32px;margin-bottom:8px">🗓</div>
+    <div style="font-size:22px;font-weight:800;color:#2C1810;font-family:Georgia,serif;margin-bottom:4px">Tong Shu 2026</div>
+    <div style="font-size:12px;color:#B09070;font-family:sans-serif;margin-bottom:24px;letter-spacing:1px">ACCESO PERSONAL</div>
+    <input id="pwd-input" type="password" placeholder="Contraseña"
+      style="width:100%;padding:14px 16px;border-radius:10px;border:2px solid #E8D5B0;font-size:15px;font-family:sans-serif;color:#2C1810;background:#FAF6EF;outline:none;text-align:center;box-sizing:border-box;margin-bottom:8px"
+      onkeydown="if(event.key==='Enter')verificar()"/>
+    <div id="pwd-error" style="font-size:12px;color:#C04040;font-family:sans-serif;min-height:18px;margin-bottom:8px"></div>
+    <button onclick="verificar()"
+      style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#8B6914,#C8A96E);border:none;color:white;font-size:15px;font-weight:800;cursor:pointer;font-family:sans-serif;box-shadow:0 4px 14px rgba(139,105,20,.4)">
+      Ingresar
+    </button>
+  </div>
+</div>
 <div class="hdr">
   <div class="hdr-sub">TONG SHU PERSONAL · 2026</div>
   <div class="hdr-name">Zulema Gutiérrez</div>
@@ -307,6 +322,28 @@
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════════════
+// ACCESO CON CONTRASEÑA
+// ══════════════════════════════════════════════════════════════════
+function verificar(){
+  const pwd=document.getElementById('pwd-input').value;
+  if(pwd==='Zulema2026$$'){
+    sessionStorage.setItem('ts_auth','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('pwd-input').value='';
+  } else {
+    const err=document.getElementById('pwd-error');
+    err.textContent='Contraseña incorrecta';
+    document.getElementById('pwd-input').value='';
+    document.getElementById('pwd-input').focus();
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+// Verificar si ya estaba autenticada en esta sesión
+if(sessionStorage.getItem('ts_auth')==='1'){
+  document.getElementById('login-screen').style.display='none';
+}
+
 // ══════════════════════════════════════════════════════════════════
 // SUPABASE CONFIG
 // ══════════════════════════════════════════════════════════════════
