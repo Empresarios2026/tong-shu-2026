@@ -203,9 +203,8 @@
 
   /* IMPRESIÓN */
   @media print {
-    body * { visibility: hidden; }
-    #print-area, #print-area * { visibility: visible; }
-    #print-area { position: fixed; left: 0; top: 0; width: 100%; }
+    body > *:not(#print-area) { display: none !important; }
+    #print-area { display: block !important; position: static; width: 100%; }
     @page { margin: 10mm; size: A4 portrait; }
   }
   #print-area { display: none; }
@@ -257,17 +256,8 @@
 
 <!-- PERFIL -->
 <div class="perfil" id="perfil">
-  <div class="perfil-title">PERFIL METAFÍSICO · 壬子 WATER RAT</div>
-  <div class="perfil-grid">
-    <div class="perfil-item"><div class="perfil-lbl">Ba Zi</div><div class="perfil-val">辛亥 · 壬子 · 甲子 · 戊午</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Day Master</div><div class="perfil-val">壬 Agua Yang</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Luck Pillar</div><div class="perfil-val">己未 hasta ~2028</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Gua</div><div class="perfil-val">2 坤 · Tierra · SO</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Riqueza DD</div><div class="perfil-val">🔥 Fuego · 丙 y 丁</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Nobles 贵人</div><div class="perfil-val">巳 Serpiente · 卯 Conejo</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Flor 桃花</div><div class="perfil-val">酉 Gallo</div></div>
-    <div class="perfil-item"><div class="perfil-lbl">Combo Riqueza</div><div class="perfil-val">申子辰 Mono+Rata+Dragón</div></div>
-  </div>
+  <div id="perfil-content"></div>
+</div>
 </div>
 
 <div class="content" id="content">
@@ -539,6 +529,8 @@ const CONS_ACT= ['Auspiciosa general','Evitar — puede generar disputas','Buena
 const PERFILES = {
   zulema: {
     nombre: 'Zulema',
+    bazi: '辛亥 · 壬子 · 甲子 · 戊午',
+    combo: '申子辰 Mono+Rata+Dragón',
     dayMaster: '壬子 Water Rat',
     gua: '2 坤',
     luckyPillar: '己未 hasta ~2028',
@@ -599,10 +591,16 @@ const PERFILES = {
       8:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yang activa tu Amigo. Día de movimiento y colaboración con tu equipo.'},
       9:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yin activa tu Robo de Riqueza. Alta energía de acción — muévete, capta y ejecuta.'},
     },
-    perfil8M:`<b>NE</b> Sheng Qi +4 · <b>O</b> Tian Yi +3 · <b>NO</b> Yan Nian +2 · <b>SO</b> Fu Wei +1`,
+    perfil8M:`
+      <div style="color:#DDD">↗ <b style="color:var(--gold)">Noreste</b> — Generador de Riqueza <span style="opacity:.5;font-size:9px">生气 +4</span></div>
+      <div style="color:#DDD">← <b style="color:var(--gold)">Oeste</b> — Dinero y Salud <span style="opacity:.5;font-size:9px">天医 +3</span></div>
+      <div style="color:#DDD">↖ <b style="color:var(--gold)">Noroeste</b> — Relaciones y Equipo <span style="opacity:.5;font-size:9px">延年 +2</span></div>
+      <div style="color:#DDD">↙ <b style="color:var(--gold)">Suroeste</b> — Estabilidad y Calma <span style="opacity:.5;font-size:9px">伏位 +1</span></div>`,
   },
   michell: {
     nombre: 'Michell',
+    bazi: '戊子 · 丙午 · 癸丑 · 壬子',
+    combo: '寅午戌 Tigre+Caballo+Perro',
     dayMaster: '丙午 Fire Horse',
     gua: '1 坎',
     luckyPillar: '戊午 hasta ~2033',
@@ -663,7 +661,11 @@ const PERFILES = {
       8:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Agua Yang activa tu 7 Muertes. Resuelve conflictos y libera lo que ya no funciona.'},
       9:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Agua Yin activa tu Oficial Directo. Estructura y renovación. Ordena y consolida.'},
     },
-    perfil8M:`<b>SE</b> Sheng Qi +4 · <b>E</b> Tian Yi +3 · <b>S</b> Yan Nian +2 · <b>N</b> Fu Wei +1`,
+    perfil8M:`
+      <div style="color:#DDD">↗ <b style="color:var(--gold)">Sureste</b> — Generador de Riqueza <span style="opacity:.5;font-size:9px">生气 +4</span></div>
+      <div style="color:#DDD">→ <b style="color:var(--gold)">Este</b> — Dinero y Salud <span style="opacity:.5;font-size:9px">天医 +3</span></div>
+      <div style="color:#DDD">↓ <b style="color:var(--gold)">Sur</b> — Relaciones y Equipo <span style="opacity:.5;font-size:9px">延年 +2</span></div>
+      <div style="color:#DDD">↑ <b style="color:var(--gold)">Norte</b> — Estabilidad y Calma <span style="opacity:.5;font-size:9px">伏位 +1</span></div>`,
   },
 };
 
@@ -1240,8 +1242,59 @@ function renderSelector(){
     </button>`).join('');
 }
 
+function renderPerfil(){
+  const p=getP();
+  const el=document.getElementById('perfil-content');
+  if(!el) return;
+  el.innerHTML=`
+    <div class="perfil-title">PERFIL METAFÍSICO · ${p.nombre.toUpperCase()}</div>
+    <div class="perfil-grid">
+      <div class="perfil-item">
+        <div class="perfil-lbl">Carta Ba Zi</div>
+        <div class="perfil-val" style="font-size:13px">${p.bazi||'—'}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Maestro del Día</div>
+        <div class="perfil-val">${p.dayMaster}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Pilar de Suerte actual</div>
+        <div class="perfil-val">${p.luckyPillar}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Número Gua</div>
+        <div class="perfil-val">${p.gua}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Elemento Riqueza</div>
+        <div class="perfil-val">${p.riqueza}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Personas Nobles <span style="font-size:9px;opacity:.6">贵人</span></div>
+        <div class="perfil-val">${p.nobles}</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Flor de Melocotón <span style="font-size:9px;opacity:.6">桃花</span></div>
+        <div class="perfil-val">${p.flor} — atracción y carisma</div>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-lbl">Combo de Riqueza</div>
+        <div class="perfil-val">${p.combo||'—'}</div>
+      </div>
+    </div>
+    <div style="background:rgba(200,169,110,.1);border-radius:9px;padding:9px 11px;border:1px solid rgba(200,169,110,.2);margin-top:8px">
+      <div style="font-size:9px;color:var(--gold);font-weight:700;margin-bottom:6px;font-family:sans-serif">
+        DIRECCIONES FAVORABLES — 8 MANSIONES <span style="opacity:.6">八宅</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:11px;font-family:sans-serif">
+        ${p.perfil8M}
+      </div>
+    </div>`;
+}
+
 function renderAll(){
   renderSelector();
+  renderPerfil();
   renderMesScroll();
   renderMesInfo();
   renderFiltros();
