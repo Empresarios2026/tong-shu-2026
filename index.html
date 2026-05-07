@@ -530,6 +530,7 @@ const PERFILES = {
   zulema: {
     nombre: 'Zulema',
     bazi: '辛亥 · 壬子 · 甲子 · 戊午',
+    baziEs: 'Metal-Cerdo · Agua-Rata · Madera-Rata · Tierra-Caballo',
     combo: '申子辰 Mono+Rata+Dragón',
     dayMaster: '壬子 Water Rat',
     gua: '2 坤',
@@ -600,6 +601,7 @@ const PERFILES = {
   michell: {
     nombre: 'Michell',
     bazi: '戊子 · 丙午 · 癸丑 · 壬子',
+    baziEs: 'Tierra-Rata · Fuego-Caballo · Agua-Buey · Agua-Rata',
     combo: '寅午戌 Tigre+Caballo+Perro',
     dayMaster: '丙午 Fire Horse',
     gua: '1 坎',
@@ -1252,6 +1254,7 @@ function renderPerfil(){
       <div class="perfil-item">
         <div class="perfil-lbl">Carta Ba Zi</div>
         <div class="perfil-val" style="font-size:13px">${p.bazi||'—'}</div>
+        <div style="font-size:9px;color:var(--gold-l);opacity:.7;margin-top:3px;font-family:sans-serif">${p.baziEs||''}</div>
       </div>
       <div class="perfil-item">
         <div class="perfil-lbl">Maestro del Día</div>
