@@ -227,16 +227,7 @@
   <div class="hdr-sub">TONG SHU PERSONAL · 2026</div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
     <div id="hdr-persona-name" class="hdr-name">Zulema</div>
-    <div style="display:flex;gap:6px">
-      ${Object.keys(PERFILES).map(k=>`
-        <button class="persona-btn" data-key="${k}" onclick="cambiarPersona('${k}')"
-          style="padding:5px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:sans-serif;
-            background:${k==='zulema'?'rgba(200,169,110,.3)':'transparent'};
-            border:1px solid ${k==='zulema'?'var(--gold)':'rgba(200,169,110,.2)'};
-            color:${k==='zulema'?'var(--gold)':'var(--txt-m)'}">
-          ${PERFILES[k].nombre}
-        </button>`).join('')}
-    </div>
+    <div id="persona-selector" style="display:flex;gap:6px"></div>
   </div>
   <div id="hdr-persona-dm" class="hdr-desc">壬子 Water Rat · 8 Capas · Verificado 2026</div>
   <div class="hdr-tags">
@@ -1092,7 +1083,21 @@ function renderMapa(){
   }).join('');
 }
 
+function renderSelector(){
+  const sel=document.getElementById('persona-selector');
+  if(!sel) return;
+  sel.innerHTML=Object.keys(PERFILES).map(k=>`
+    <button class="persona-btn" data-key="${k}" onclick="cambiarPersona('${k}')"
+      style="padding:5px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:sans-serif;
+        background:${k===state.persona?'rgba(200,169,110,.3)':'transparent'};
+        border:1px solid ${k===state.persona?'var(--gold)':'rgba(200,169,110,.2)'};
+        color:${k===state.persona?'var(--gold)':'var(--txt-m)'}">
+      ${PERFILES[k].nombre}
+    </button>`).join('');
+}
+
 function renderAll(){
+  renderSelector();
   renderMesScroll();
   renderMesInfo();
   renderFiltros();
