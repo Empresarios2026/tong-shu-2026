@@ -225,8 +225,20 @@
 </div>
 <div class="hdr">
   <div class="hdr-sub">TONG SHU PERSONAL · 2026</div>
-  <div class="hdr-name">Zulema Gutiérrez</div>
-  <div class="hdr-desc">壬子 Day Master · 8 Capas · Verificado Joey Yap Pro 2026</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+    <div id="hdr-persona-name" class="hdr-name">Zulema</div>
+    <div style="display:flex;gap:6px">
+      ${Object.keys(PERFILES).map(k=>`
+        <button class="persona-btn" data-key="${k}" onclick="cambiarPersona('${k}')"
+          style="padding:5px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:sans-serif;
+            background:${k==='zulema'?'rgba(200,169,110,.3)':'transparent'};
+            border:1px solid ${k==='zulema'?'var(--gold)':'rgba(200,169,110,.2)'};
+            color:${k==='zulema'?'var(--gold)':'var(--txt-m)'}">
+          ${PERFILES[k].nombre}
+        </button>`).join('')}
+    </div>
+  </div>
+  <div id="hdr-persona-dm" class="hdr-desc">壬子 Water Rat · 8 Capas · Verificado 2026</div>
   <div class="hdr-tags">
     <span class="hdr-tag">Ba Zi</span>
     <span class="hdr-tag">12 Oficiales</span>
@@ -386,29 +398,157 @@ const CONS_ES = ['Cuerno','Cuello','Cimiento','Cuarto','Corazón','Cola','Cesto'
 const CONS_Q  = ['buen','evit','buen','buen','evit','exce','buen','buen','evit','neut','evit','evit','exce','exce','neut','exce','buen','evit','buen','evit','buen','neut','evit','evit','buen','exce','evit','neut'];
 const CONS_ACT= ['Auspiciosa general','Evitar — puede generar disputas','Buena para construcción y negocios','Muy auspiciosa — actividades importantes','Negativa — solo viajes o cosecha','★ Contratos, FS, remodelación — ayuda de nobles','Construcción, cobros — no matrimonio','Comercio, riqueza, FS','Estrella desastre — evitar todo negocio','Actividades internas y académicas','Pura negativa — ninguna actividad','Solo cobro de deudas','★ Nuevo negocio, construcción, activos','★ Firma contratos, apertura oficial, prosperidad','Malo apertura — bueno viajes y remodelaciones','★ Sin atributos negativos — guardián de riqueza','Matrimonio y asuntos externos/públicos','Extremadamente feroz — evitar todo','Construcción, tierra, matrimonio — benevolente','Altamente negativa — evitar todo','FS, viajes, remodelación, fama y logros','Uso limitado — solo FS o groundbreaking','Negativa — no matrimonio ni construcción','Evitar activación FS','Negociaciones, aperturas oficiales, claridad','★ Extremadamente positiva — todos los negocios','Negativa para mayoría de actividades','Tolerancia y acuerdo — para cerrar conflictos'];
 
-const P_Q = {0:'evit',1:'buen',2:'exce',3:'evit',4:'exce',5:'neut',6:'evit',7:'buen',8:'exce',9:'exce',10:'neut',11:'exce'};
-// ── TEMA DEL DÍA — 壬子 Day Master ──────────────────────────────
-const TEMA_DIA = {
-  0:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yang activa tu Comiendo Dios. Crea contenido, desarrolla proyectos y nuevas ideas en EI.'},
-  1:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yin activa tu Recurso Directo. Creatividad con sustancia — planifica y construye.'},
-  2:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yang activa tu Dinero Directo. Máxima activación de riqueza. Ideal para captaciones y cierres.'},
-  3:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yin activa tu Dinero Indirecto. Bueno para análisis financiero y estrategia económica.'},
-  4:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yang activa tu 7 Muertes. Resuelve conflictos y reorganiza procesos internos de EI.'},
-  5:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yin activa tu Oficial Directo. Estructura, disciplina y orden en tu sistema de trabajo.'},
-  6:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yang activa tu Recurso Directo. Claridad mental elevada. Planifica estrategia y estudia el mercado.'},
-  7:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yin activa tu Recurso Indirecto. Investiga y profundiza en estrategia inmobiliaria.'},
-  8:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yang activa tu Amigo. Día de movimiento y colaboración con tu equipo de agentes.'},
-  9:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yin activa tu Robo de Riqueza. Alta energía de acción — muévete, capta y ejecuta.'}
+// ══════════════════════════════════════════════════════════════════
+// PERFILES — datos personales por persona
+// ══════════════════════════════════════════════════════════════════
+const PERFILES = {
+  zulema: {
+    nombre: 'Zulema',
+    dayMaster: '壬子 Water Rat',
+    gua: '2 坤',
+    luckyPillar: '己未 hasta ~2028',
+    riqueza: '🔥 Fuego · 丙 y 丁',
+    nobles: '巳 Serpiente · 卯 Conejo',
+    flor: '酉 Gallo',
+    tabla: 'tong_shu_diario',
+    csvNombre: 'Tong_Shu_Diario_Zulema_2026.csv',
+    P_Q: {0:'evit',1:'buen',2:'exce',3:'evit',4:'exce',5:'neut',6:'evit',7:'buen',8:'exce',9:'exce',10:'neut',11:'exce'},
+    IS_NOBLEMAN:{3:true,5:true},
+    IS_WEALTH:{2:true,3:true},
+    IS_LP:{7:true},
+    IS_PB:{9:true},
+    IS_CW:{1:true},
+    IS_WCL:{11:true},
+    IS_YIMA:{2:true},
+    HORAS:[
+      {rama:'子',es:'Rata',   h:'11pm–1am',rating:'evit', razon:'Auto-penalización'},
+      {rama:'丑',es:'Buey',   h:'1–3am',   rating:'buen', razon:'Combo 亥子丑 — decisiones'},
+      {rama:'寅',es:'Tigre',  h:'3–5am',   rating:'exce', razon:'驿马 + 文昌 — expansión'},
+      {rama:'卯',es:'Conejo', h:'5–7am',   rating:'evit', razon:'Castigo con 子'},
+      {rama:'辰',es:'Dragón', h:'7–9am',   rating:'exce', razon:'Completa 申子辰 — riqueza'},
+      {rama:'巳',es:'Serpiente',h:'9–11am',rating:'buen', razon:'Noble 贵人 — reuniones'},
+      {rama:'午',es:'Caballo',h:'11am–1pm',rating:'evit', razon:'Choque doble'},
+      {rama:'未',es:'Cabra',  h:'1–3pm',   rating:'buen', razon:'Luck Pillar 己未'},
+      {rama:'申',es:'Mono',   h:'3–5pm',   rating:'triple',razon:'⭐ Activa 申子辰 — mejor hora'},
+      {rama:'酉',es:'Gallo',  h:'5–7pm',   rating:'exce', razon:'🌸 Flor Melocotón — atracción'},
+      {rama:'戌',es:'Perro',  h:'7–9pm',   rating:'neut', razon:'Neutro'},
+      {rama:'亥',es:'Cerdo',  h:'9–11pm',  rating:'triple',razon:'⭐ Hora natal + 文昌 + 禄神'},
+    ],
+    FILTROS_DIR:[
+      {id:'all',      lb:'Todos',        oi:null,    icon:'↗',dir:'Noreste (生气 +4)',  tip:'Dirección principal de riqueza — Gua 2'},
+      {id:'firma',    lb:'✍️ Firmas',    oi:[8,4],   icon:'↗',dir:'Noreste (生气 +4)',  tip:'Oriéntate hacia NE al firmar'},
+      {id:'lanzar',   lb:'🚀 Lanzar',    oi:[10,8],  icon:'↗',dir:'Noreste (生气 +4)',  tip:'NE — máxima energía para lanzamientos'},
+      {id:'captacion',lb:'💰 Captación', oi:[10,9,8],icon:'↗',dir:'Noreste (生气 +4)',  tip:'Capta facing NE — Sheng Qi'},
+      {id:'campanas', lb:'📣 Campañas',  oi:[10,2,8],icon:'→',dir:'Este (QM Riqueza)',  tip:'Este = sector QM de Riqueza'},
+      {id:'cobros',   lb:'💵 Cobros',    oi:[9,2,8], icon:'←',dir:'Oeste (天医 +3)',    tip:'Tian Yi activa flujo de cobros'},
+    ],
+    MESES_NOTA:{
+      5:'Mayo 1–4: mes 辰 Dragón. Desde el 5: mes 巳 Serpiente.',
+      6:'⚠️ Mes Caballo en Año Caballo — doble choque. Minimiza compromisos críticos.',
+      7:'Mes 未 Cabra activa tu Luck Pillar actual 己未. Energía de expansión.',
+      8:'✨ Tu mejor mes. Mes Mono activa 申子辰. Lanza lo más importante de EI.',
+      9:'Segunda mejor ventana. Mes Gallo estable — cierres y contratos.',
+      10:'Mes estable. Selecciona días con triple alineación.',
+      11:'Mes 亥 resuena con tu Hora natal. Bueno para relaciones y networking.',
+      12:'⚠️ Mes Rata activa penalización de tus pilares. Actividades internas.',
+    },
+    TEMA_DIA:{
+      0:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yang activa tu Comiendo Dios. Crea contenido y desarrolla proyectos nuevos.'},
+      1:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yin activa tu Recurso Directo. Creatividad con sustancia — planifica y construye.'},
+      2:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yang activa tu Dinero Directo. Máxima activación de riqueza. Ideal para captaciones y cierres.'},
+      3:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Fuego Yin activa tu Dinero Indirecto. Bueno para análisis financiero y estrategia económica.'},
+      4:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yang activa tu 7 Muertes. Resuelve conflictos y reorganiza procesos internos.'},
+      5:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Tierra Yin activa tu Oficial Directo. Estructura, disciplina y orden en tu trabajo.'},
+      6:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yang activa tu Recurso Directo. Claridad mental elevada. Planifica y estudia el mercado.'},
+      7:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Metal Yin activa tu Recurso Indirecto. Investiga y profundiza en estrategia inmobiliaria.'},
+      8:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yang activa tu Amigo. Día de movimiento y colaboración con tu equipo.'},
+      9:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Agua Yin activa tu Robo de Riqueza. Alta energía de acción — muévete, capta y ejecuta.'},
+    },
+    perfil8M:`<b>NE</b> Sheng Qi +4 · <b>O</b> Tian Yi +3 · <b>NO</b> Yan Nian +2 · <b>SO</b> Fu Wei +1`,
+  },
+  michell: {
+    nombre: 'Michell',
+    dayMaster: '丙午 Fire Horse',
+    gua: '1 坎',
+    luckyPillar: '戊午 hasta ~2033',
+    riqueza: '⚪ Metal · 庚 y 辛',
+    nobles: '亥 Cerdo · 酉 Gallo',
+    flor: '卯 Conejo',
+    tabla: 'tong_shu_diario',
+    csvNombre: 'Tong_Shu_Diario_Michell_2026.csv',
+    P_Q: {0:'evit',1:'buen',2:'exce',3:'exce',4:'buen',5:'buen',6:'evit',7:'buen',8:'exce',9:'exce',10:'buen',11:'exce'},
+    IS_NOBLEMAN:{9:true,11:true},
+    IS_WEALTH:{6:true,7:true},
+    IS_LP:{10:true},
+    IS_PB:{3:true},
+    IS_CW:{2:true,10:true},
+    IS_WCL:{8:true},
+    IS_YIMA:{8:true},
+    HORAS:[
+      {rama:'子',es:'Rata',   h:'11pm–1am',rating:'evit', razon:'Choca Day Branch 午'},
+      {rama:'丑',es:'Buey',   h:'1–3am',   rating:'buen', razon:'三会 亥子丑 — decisiones'},
+      {rama:'寅',es:'Tigre',  h:'3–5am',   rating:'exce', razon:'Resource Wood — claridad y expansión'},
+      {rama:'卯',es:'Conejo', h:'5–7am',   rating:'exce', razon:'🌸 Flor Melocotón + Resource'},
+      {rama:'辰',es:'Dragón', h:'7–9am',   rating:'buen', razon:'Output Earth — productividad'},
+      {rama:'巳',es:'Serpiente',h:'9–11am',rating:'buen', razon:'Fuego amigo — energía propia'},
+      {rama:'午',es:'Caballo',h:'11am–1pm',rating:'evit', razon:'Self-penalty 午午'},
+      {rama:'未',es:'Cabra',  h:'1–3pm',   rating:'buen', razon:'Output Earth — creación'},
+      {rama:'申',es:'Mono',   h:'3–5pm',   rating:'triple',razon:'⭐ Metal Riqueza + 文昌 + 驿马'},
+      {rama:'酉',es:'Gallo',  h:'5–7pm',   rating:'triple',razon:'⭐ Metal Riqueza + Noble 贵人'},
+      {rama:'戌',es:'Perro',  h:'7–9pm',   rating:'buen', razon:'Completa 寅午戌 — fuerza'},
+      {rama:'亥',es:'Cerdo',  h:'9–11pm',  rating:'exce', razon:'Noble 贵人 + Influencia 壬'},
+    ],
+    FILTROS_DIR:[
+      {id:'all',      lb:'Todos',        oi:null,    icon:'↗',dir:'Sureste (生气 +4)',  tip:'Dirección principal de riqueza — Gua 1'},
+      {id:'firma',    lb:'✍️ Firmas',    oi:[8,4],   icon:'↗',dir:'Sureste (生气 +4)',  tip:'Oriéntate hacia SE al firmar'},
+      {id:'lanzar',   lb:'🚀 Lanzar',    oi:[10,8],  icon:'↗',dir:'Sureste (生气 +4)',  tip:'SE — máxima energía para lanzamientos'},
+      {id:'captacion',lb:'💰 Captación', oi:[10,9,8],icon:'↗',dir:'Sureste (生气 +4)',  tip:'Capta facing SE — Sheng Qi'},
+      {id:'campanas', lb:'📣 Campañas',  oi:[10,2,8],icon:'→',dir:'Este (天医 +3)',      tip:'Este = Tian Yi — dinero y salud'},
+      {id:'cobros',   lb:'💵 Cobros',    oi:[9,2,8], icon:'↓',dir:'Sur (延年 +2)',       tip:'Sur activa Yan Nian — cobros'},
+    ],
+    MESES_NOTA:{
+      5:'Mayo: mes 巳 Serpiente. Energía de Metal activa días de riqueza.',
+      6:'⚠️ Mes Caballo en Año Caballo — choca tu Day Branch 午午. Precaución.',
+      7:'Mes 未 Cabra — Output Earth. Días creativos y de producción.',
+      8:'✨ Mes Mono activa riqueza Metal. Excelente para captaciones y cierres.',
+      9:'Mes Gallo 酉 — tu Noble y Riqueza. Segunda mejor ventana del año.',
+      10:'Mes Perro 戌 — completa 寅午戌 Fire combo. Mes de fortaleza personal.',
+      11:'Mes Cerdo 亥 — tu Noble Celestial activo. Bueno para relaciones.',
+      12:'⚠️ Mes Rata choca tu Day Branch 午. Minimiza compromisos críticos.',
+    },
+    TEMA_DIA:{
+      0:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Madera Yang activa tu Recurso Directo. Claridad mental elevada. Ideal para planificar y tomar decisiones.'},
+      1:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Madera Yin activa tu Recurso Indirecto. Excelente para investigar y profundizar en estrategia.'},
+      2:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Fuego Yang activa tu Amigo. Día de movimiento, acción y colaboración. Muévete y ejecuta.'},
+      3:{icon:'⚡',nombre:'Ejecución',  color:'#3A7A8A',desc:'Fuego Yin activa tu Robo de Riqueza. Alta energía de acción — ejecuta con fuerza.'},
+      4:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Tierra Yang activa tu Comiendo Dios. Día para crear, producir y generar. Fluye la creatividad.'},
+      5:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Tierra Yin activa tu Oficial Herido. Creatividad con estructura. Desarrolla proyectos con orden.'},
+      6:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Metal Yang activa tu Dinero Directo. Máxima activación de riqueza. Ideal para captaciones y cierres.'},
+      7:{icon:'💰',nombre:'Riqueza',    color:'#8B6914',desc:'Metal Yin activa tu Oficial Directo. Día de autoridad y dinero. Presentaciones y acuerdos formales.'},
+      8:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Agua Yang activa tu 7 Muertes. Resuelve conflictos y libera lo que ya no funciona.'},
+      9:{icon:'🌿',nombre:'Sanación',   color:'#1A5A6A',desc:'Agua Yin activa tu Oficial Directo. Estructura y renovación. Ordena y consolida.'},
+    },
+    perfil8M:`<b>SE</b> Sheng Qi +4 · <b>E</b> Tian Yi +3 · <b>S</b> Yan Nian +2 · <b>N</b> Fu Wei +1`,
+  },
 };
-function getTema(si){ return TEMA_DIA[si]||{icon:'—',nombre:'Neutro',color:'#B09070',desc:''}; }
 
-const IS_NOBLEMAN  = {3:true,5:true};
-const IS_WEALTH    = {2:true,3:true};
-const IS_LP        = {7:true};
-const IS_PB        = {9:true};
-const IS_CW        = {1:true};
-const IS_WCL       = {11:true};
-const IS_YIMA      = {2:true};
+// Perfil activo — se actualiza al cambiar persona
+let PERFIL_ACTIVO = PERFILES.zulema;
+
+function getP(){ return PERFIL_ACTIVO; }
+
+// Helpers que usan el perfil activo
+function getTema(si){ return getP().TEMA_DIA[si]||{icon:'—',nombre:'Neutro',color:'#B09070',desc:''}; }
+
+// Compat aliases — usan perfil activo
+function get_P_Q(){ return getP().P_Q; }
+function get_IS_N(){ return getP().IS_NOBLEMAN; }
+function get_IS_W(){ return getP().IS_WEALTH; }
+function get_IS_LP(){ return getP().IS_LP; }
+function get_IS_PB(){ return getP().IS_PB; }
+function get_IS_CW(){ return getP().IS_CW; }
+function get_IS_WCL(){ return getP().IS_WCL; }
+function get_IS_YM(){ return getP().IS_YIMA; }
 
 const ACT = {
   8:  ['✍️ Firma de contratos','💼 Cierres de venta','🏢 Presentar propuestas','💰 Reuniones de cierre'],
@@ -425,21 +565,6 @@ const ACT = {
   6:  ['🔒 Solo resolver conflictos activos']
 };
 
-const HORAS = [
-  {rama:'子',es:'Rata',   h:'11pm–1am', rating:'evit',  razon:'Auto-penalización'},
-  {rama:'丑',es:'Buey',   h:'1–3am',    rating:'buen',  razon:'Combo 亥子丑 — decisiones'},
-  {rama:'寅',es:'Tigre',  h:'3–5am',    rating:'exce',  razon:'驿马 + 文昌 — expansión'},
-  {rama:'卯',es:'Conejo', h:'5–7am',    rating:'evit',  razon:'Castigo con 子'},
-  {rama:'辰',es:'Dragón', h:'7–9am',    rating:'exce',  razon:'Completa 申子辰 — riqueza'},
-  {rama:'巳',es:'Serpiente',h:'9–11am', rating:'buen',  razon:'Noble 贵人 — reuniones'},
-  {rama:'午',es:'Caballo',h:'11am–1pm', rating:'evit',  razon:'Choque doble — evitar firmas'},
-  {rama:'未',es:'Cabra',  h:'1–3pm',    rating:'buen',  razon:'Luck Pillar 己未'},
-  {rama:'申',es:'Mono',   h:'3–5pm',    rating:'triple',razon:'⭐ Activa 申子辰 — mejor hora'},
-  {rama:'酉',es:'Gallo',  h:'5–7pm',    rating:'exce',  razon:'🌸 Flor Melocotón — atracción'},
-  {rama:'戌',es:'Perro',  h:'7–9pm',    rating:'neut',  razon:'Neutro'},
-  {rama:'亥',es:'Cerdo',  h:'9–11pm',   rating:'triple',razon:'⭐ Hora natal + 文昌 + 禄神'},
-];
-
 const SOL_M = [
   [new Date(2026,4,5),5],[new Date(2026,5,6),6],[new Date(2026,6,7),7],
   [new Date(2026,7,7),8],[new Date(2026,8,7),9],[new Date(2026,9,8),10],
@@ -447,23 +572,23 @@ const SOL_M = [
 ];
 
 const MESES = [
-  {m:5,n:'Mayo',      d:31,calMes:'巳 Serpiente',color:'#8B6914',alerta:null,nota:'Mayo 1–4: mes 辰 Dragón. Desde el 5: mes 巳 Serpiente.'},
-  {m:6,n:'Junio',     d:30,calMes:'午 Caballo',  color:'#C04040',alerta:'DIFÍCIL',nota:'⚠️ Mes Caballo en Año Caballo — doble choque. Minimiza compromisos críticos.'},
-  {m:7,n:'Julio',     d:31,calMes:'未 Cabra',    color:'#1565C0',alerta:'LUCK PILLAR',nota:'Mes 未 Cabra activa tu Luck Pillar actual 己未. Energía de expansión.'},
-  {m:8,n:'Agosto',    d:31,calMes:'申 Mono',     color:'#3A5A10',alerta:'✨ EXCELENTE',nota:'Tu mejor mes. Mes Mono activa 申子辰. Lanza lo más importante de EI.'},
-  {m:9,n:'Septiembre',d:30,calMes:'酉 Gallo',    color:'#4A6A15',alerta:null,nota:'Segunda mejor ventana. Mes Gallo estable — cierres y contratos.'},
-  {m:10,n:'Octubre',  d:31,calMes:'戌 Perro',    color:'#8B6914',alerta:null,nota:'Mes estable. Selecciona días con triple alineación.'},
-  {m:11,n:'Noviembre',d:30,calMes:'亥 Cerdo',    color:'#4A6A15',alerta:null,nota:'Mes 亥 resuena con tu Hora natal. Bueno para relaciones y networking.'},
-  {m:12,n:'Diciembre',d:31,calMes:'子 Rata',     color:'#C88020',alerta:'PRECAUCIÓN',nota:'⚠️ Mes Rata activa penalización de tus pilares. Actividades internas.'}
+  {m:5, n:'Mayo',       d:31,calMes:'巳 Serpiente',color:'#8B6914',alerta:null},
+  {m:6, n:'Junio',      d:30,calMes:'午 Caballo',  color:'#C04040',alerta:'DIFÍCIL'},
+  {m:7, n:'Julio',      d:31,calMes:'未 Cabra',    color:'#1565C0',alerta:null},
+  {m:8, n:'Agosto',     d:31,calMes:'申 Mono',     color:'#3A5A10',alerta:'✨ EXCELENTE'},
+  {m:9, n:'Septiembre', d:30,calMes:'酉 Gallo',    color:'#4A6A15',alerta:null},
+  {m:10,n:'Octubre',    d:31,calMes:'戌 Perro',    color:'#8B6914',alerta:null},
+  {m:11,n:'Noviembre',  d:30,calMes:'亥 Cerdo',    color:'#4A6A15',alerta:null},
+  {m:12,n:'Diciembre',  d:31,calMes:'子 Rata',     color:'#C88020',alerta:'PRECAUCIÓN'},
 ];
 
 const FILTROS_DATA = [
-  {id:'all',      lb:'Todos',        oi:null, icon:'↗', dir:'Noreste (生气 +4)', tip:'Tu dirección principal de riqueza'},
-  {id:'firma',    lb:'✍️ Firmas',    oi:[8,4],icon:'↗', dir:'Noreste (生气 +4)', tip:'Oriéntate hacia NE al firmar'},
-  {id:'lanzar',   lb:'🚀 Lanzar',    oi:[10,8],icon:'↗',dir:'Noreste (生气 +4)', tip:'NE — máxima energía para lanzamientos'},
-  {id:'captacion',lb:'💰 Captación', oi:[10,9,8],icon:'↗',dir:'Noreste (生气 +4)',tip:'Capta facing NE — Sheng Qi'},
-  {id:'campanas', lb:'📣 Campañas',  oi:[10,2,8],icon:'→',dir:'Oriente (QM Riqueza)',tip:'Este = sector QM de Riqueza'},
-  {id:'cobros',   lb:'💵 Cobros',    oi:[9,2,8], icon:'←',dir:'Oeste (天医 +3)', tip:'Tian Yi activa flujo de cobros'},
+  {id:'all',      lb:'Todos'},
+  {id:'firma',    lb:'✍️ Firmas'},
+  {id:'lanzar',   lb:'🚀 Lanzar'},
+  {id:'captacion',lb:'💰 Captación'},
+  {id:'campanas', lb:'📣 Campañas'},
+  {id:'cobros',   lb:'💵 Cobros'},
 ];
 
 const CATS = ['General','Captación','Firma','Campaña','Networking','Cobro','Otro'];
@@ -481,10 +606,29 @@ const RS = {
 // ESTADO GLOBAL
 // ══════════════════════════════════════════════════════════════════
 let state = {
-  mes: 5, dia: null, filtro: 'all',
-  entradas: {}, // cache local {fecha: entry}
+  mes: 5, dia: null, filtro: 'all', persona: 'zulema',
+  entradas: {},
   diarioState: { nota:'', estrellas:0, cat:'General', coincide:null, guardado:false }
 };
+
+function cambiarPersona(key){
+  if(!PERFILES[key]) return;
+  state.persona=key;
+  PERFIL_ACTIVO=PERFILES[key];
+  state.dia=null; state.entradas={};
+  state.diarioState={nota:'',estrellas:0,cat:'General',coincide:null,guardado:false};
+  // Actualizar nombre en header
+  document.getElementById('hdr-persona-name').textContent=PERFIL_ACTIVO.nombre;
+  document.getElementById('hdr-persona-dm').textContent=PERFIL_ACTIVO.dayMaster;
+  // Resaltar botón activo
+  document.querySelectorAll('.persona-btn').forEach(b=>{
+    b.style.background=b.dataset.key===key?'rgba(200,169,110,.3)':'transparent';
+    b.style.borderColor=b.dataset.key===key?'var(--gold)':'rgba(200,169,110,.2)';
+    b.style.color=b.dataset.key===key?'var(--gold)':'var(--txt-m)';
+  });
+  renderAll();
+  cargarEntradas().then(()=>renderAll());
+}
 
 // ══════════════════════════════════════════════════════════════════
 // CÁLCULOS
@@ -496,12 +640,14 @@ function getOI(mb,db){ return((db-mb+12)%12); }
 function getCI(y,m,d){ const diff=Math.round((new Date(y,m-1,d)-ANCHOR_DATE)/86400000); return((ANCHOR_CONST+diff)%28+28)%28; }
 
 function analyzeDay(y,m,d){
-  const db=getDayBranch(y,m,d), si=getDayStem(y,m,d), mb=getSolarMonth(y,m,d);
-  const oi=getOI(mb,db), ci=getCI(y,m,d);
-  const pq=P_Q[db], oq=OFC_Q[oi], cq=CONS_Q[ci];
-  const isYel=IS_YELLOW[oi], isN=!!IS_NOBLEMAN[db], isW=!!IS_WEALTH[si];
-  const isLP=!!IS_LP[db], isPB=!!IS_PB[db], isCW=!!IS_CW[db], isWCL=!!IS_WCL[db], isYM=!!IS_YIMA[db];
-  const isYB=db===0, isMB=oi===6;
+  const p=getP();
+  const db_=getDayBranch(y,m,d), si=getDayStem(y,m,d), mb=getSolarMonth(y,m,d);
+  const oi=getOI(mb,db_), ci=getCI(y,m,d);
+  const pq=p.P_Q[db_], oq=OFC_Q[oi], cq=CONS_Q[ci];
+  const isYel=IS_YELLOW[oi], isN=!!p.IS_NOBLEMAN[db_], isW=!!p.IS_WEALTH[si];
+  const isLP=!!p.IS_LP[db_], isPB=!!p.IS_PB[db_], isCW=!!p.IS_CW[db_];
+  const isWCL=!!p.IS_WCL[db_], isYM=!!p.IS_YIMA[db_];
+  const isYB=db_===0, isMB=oi===6;
   const flags=[]; if(isYB)flags.push('岁破'); if(isMB)flags.push('月破');
   let rating;
   if(pq==='evit'||isYB||isMB){rating='evit';}
@@ -516,31 +662,38 @@ function analyzeDay(y,m,d){
   else if(pq==='neut'&&oq==='exce'&&(cq==='exce'||cq==='buen')&&isYel){rating='buen';}
   else if(pq==='neut'&&oq==='exce'){rating='neut';}
   else{rating='neut';}
-  return{db,si,mb,oi,ci,pq,oq,cq,isYel,isN,isW,isLP,isPB,isCW,isWCL,isYM,rating,flags,isYB,isMB};
+  return{db:db_,si,mb,oi,ci,pq,oq,cq,isYel,isN,isW,isLP,isPB,isCW,isWCL,isYM,rating,flags,isYB,isMB};
 }
 
 function fmtFecha(m,d){ return `2026-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
 
 // ══════════════════════════════════════════════════════════════════
-// SUPABASE OPERACIONES
+// SUPABASE OPERACIONES — tabla unificada con campo persona
 // ══════════════════════════════════════════════════════════════════
 async function cargarEntradas(){
-  if(!db){ console.warn('Supabase no disponible'); return; }
+  if(!db) return;
   try{
-    const {data,error}=await db.from('tong_shu_diario').select('*').order('fecha');
-    if(!error&&data){ data.forEach(e=>{ state.entradas[e.fecha]=e; }); }
+    const {data,error}=await db.from('tong_shu_diario')
+      .select('*').eq('persona',state.persona).order('fecha');
+    if(!error&&data){ 
+      state.entradas={};
+      data.forEach(e=>{ state.entradas[e.fecha]=e; }); 
+    }
   }catch(e){ console.log('Error cargando:',e); }
 }
 
 async function guardarEntrada(fecha, entry){
   if(!db) return false;
   try{
-    const existe = state.entradas[fecha];
+    const existe=state.entradas[fecha];
     if(existe){
-      const {error}=await db.from('tong_shu_diario').update({...entry,updated_at:new Date().toISOString()}).eq('fecha',fecha);
+      const {error}=await db.from('tong_shu_diario')
+        .update({...entry,updated_at:new Date().toISOString()})
+        .eq('persona',state.persona).eq('fecha',fecha);
       if(!error) state.entradas[fecha]={...state.entradas[fecha],...entry};
     } else {
-      const {data,error}=await db.from('tong_shu_diario').insert([{...entry,fecha}]).select();
+      const {data,error}=await db.from('tong_shu_diario')
+        .insert([{...entry,fecha,persona:state.persona}]).select();
       if(!error&&data) state.entradas[fecha]=data[0];
     }
     return true;
@@ -550,7 +703,8 @@ async function guardarEntrada(fecha, entry){
 async function borrarEntrada(fecha){
   if(!db) return false;
   try{
-    await db.from('tong_shu_diario').delete().eq('fecha',fecha);
+    await db.from('tong_shu_diario')
+      .delete().eq('persona',state.persona).eq('fecha',fecha);
     delete state.entradas[fecha];
     return true;
   }catch(e){ return false; }
@@ -570,7 +724,7 @@ function descargarCSV(){
   const csv=[header,...rows].join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download='Tong_Shu_Diario_Zulema_2026.csv';
+  a.download=getP().csvNombre;
   a.click();
 }
 
@@ -600,7 +754,7 @@ function renderMesInfo(){
       </div>
       ${md.alerta?`<div class="mes-badge" style="background:${md.color}">${md.alerta}</div>`:''}
     </div>
-    <div class="mes-nota">${md.nota}</div>
+    <div class="mes-nota">${getP().MESES_NOTA[state.mes]||''}</div>
     <div class="mes-stats">
       <span style="color:var(--triple-t);font-weight:700">★★★ ${cnt('triple')}</span>
       <span style="color:var(--exce-t);font-weight:700">★★ ${cnt('exce')}</span>
@@ -614,15 +768,16 @@ function renderMesInfo(){
 }
 
 function renderFiltros(){
+  const filtrosDir=getP().FILTROS_DIR;
   document.getElementById('filtros').innerHTML=FILTROS_DATA.map(f=>`
     <button class="filtro-btn${state.filtro===f.id?' active':''}" onclick="selFiltro('${f.id}')">${f.lb}</button>
   `).join('');
-  const fd=FILTROS_DATA.find(f=>f.id===state.filtro);
-  const db=document.getElementById('dir-box');
+  const fd=filtrosDir.find(f=>f.id===state.filtro)||filtrosDir[0];
+  const dbEl=document.getElementById('dir-box');
   if(state.filtro!=='all'){
-    db.style.display='flex';
-    db.innerHTML=`<div class="dir-icon">${fd.icon}</div><div><span class="dir-label">${fd.dir}</span><span class="dir-tip">${fd.tip}</span></div>`;
-  } else { db.style.display='none'; }
+    dbEl.style.display='flex';
+    dbEl.innerHTML=`<div class="dir-icon">${fd.icon}</div><div><span class="dir-label">${fd.dir}</span><span class="dir-tip">${fd.tip}</span></div>`;
+  } else { dbEl.style.display='none'; }
 }
 
 function getCeldas(){
@@ -635,7 +790,7 @@ function getCeldas(){
 
 function renderCalendario(){
   const celdas=getCeldas();
-  const fd=FILTROS_DATA.find(f=>f.id===state.filtro);
+  const fd=getP().FILTROS_DIR.find(f=>f.id===state.filtro)||getP().FILTROS_DIR[0];
   const grid=document.getElementById('cal-grid');
   grid.innerHTML=celdas.map((cel,i)=>{
     if(!cel) return '<div class="cal-empty"></div>';
@@ -677,7 +832,7 @@ function renderDetalle(){
   const rs=RS[d.rating];
   const fecha=fmtFecha(state.mes,state.dia);
   const entrada=state.entradas[fecha]||null;
-  const fd=FILTROS_DATA.find(f=>f.id===state.filtro);
+  const fd=getP().FILTROS_DIR.find(f=>f.id===state.filtro)||getP().FILTROS_DIR[0];
 
   // Badges
   const badges=[];
@@ -689,9 +844,9 @@ function renderDetalle(){
   if(d.isCW&&d.rating!=='evit') badges.push(`<div class="badge-item" style="background:var(--buen-b);border:1px solid var(--buen-d);color:var(--buen-t)">合 三会 Combo Agua Norte</div>`);
 
   // Horas
-  const horasOpt=HORAS.filter(h=>['triple','exce'].includes(h.rating));
-  const horasBuen=HORAS.filter(h=>h.rating==='buen');
-  const horasEvit=HORAS.filter(h=>h.rating==='evit');
+  const horasOpt=getP().HORAS.filter(h=>['triple','exce'].includes(h.rating));
+  const horasBuen=getP().HORAS.filter(h=>h.rating==='buen');
+  const horasEvit=getP().HORAS.filter(h=>h.rating==='evit');
 
   // Actividades
   const acts=ACT[d.oi]||ACT[3];
@@ -1037,11 +1192,11 @@ async function guardarDiario(){
     const existe=state.entradas[fecha];
     let error;
     if(existe){
-      const res=await db.from('tong_shu_diario').update({...entry,updated_at:new Date().toISOString()}).eq('fecha',fecha);
+      const res=await db.from('tong_shu_diario').update({...entry,updated_at:new Date().toISOString()}).eq('persona',state.persona).eq('fecha',fecha);
       error=res.error;
       if(!error) state.entradas[fecha]={...state.entradas[fecha],...entry};
     } else {
-      const res=await db.from('tong_shu_diario').insert([{...entry,fecha}]).select();
+      const res=await db.from('tong_shu_diario').insert([{...entry,fecha,persona:state.persona}]).select();
       error=res.error;
       if(!error&&res.data) state.entradas[fecha]=res.data[0];
     }
