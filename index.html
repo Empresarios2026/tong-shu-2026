@@ -540,6 +540,13 @@ const PERFILES = {
     flor: '酉 Gallo',
     tabla: 'tong_shu_diario',
     csvNombre: 'Tong_Shu_Diario_Zulema_2026.csv',
+    // 4 Pilares — ramas terrestres (índice 0-11)
+    PILARES:[
+      {rama:11, ch:'亥', es:'Cerdo',   area:'Hora',  areaEs:'EI · Proyectos · Inversión'},
+      {rama:0,  ch:'子', es:'Rata',    area:'Día★',  areaEs:'Tú misma · Salud · Pareja'},
+      {rama:0,  ch:'子', es:'Rata',    area:'Mes',   areaEs:'Trabajo · Carrera · Padres'},
+      {rama:6,  ch:'午', es:'Caballo', area:'Año',   areaEs:'Redes · Imagen · Industria'},
+    ],
     P_Q: {0:'evit',1:'buen',2:'exce',3:'evit',4:'exce',5:'neut',6:'evit',7:'buen',8:'exce',9:'exce',10:'neut',11:'exce'},
     IS_NOBLEMAN:{3:true,5:true},
     IS_WEALTH:{2:true,3:true},
@@ -611,6 +618,13 @@ const PERFILES = {
     flor: '卯 Conejo',
     tabla: 'tong_shu_diario',
     csvNombre: 'Tong_Shu_Diario_Michell_2026.csv',
+    // 4 Pilares — ramas terrestres
+    PILARES:[
+      {rama:0,  ch:'子', es:'Rata',    area:'Hora',  areaEs:'Proyectos · Inversión · Hijos'},
+      {rama:6,  ch:'午', es:'Caballo', area:'Día★',  areaEs:'Él mismo · Salud · Pareja'},
+      {rama:1,  ch:'丑', es:'Buey',    area:'Mes',   areaEs:'Trabajo · Carrera · Padres'},
+      {rama:0,  ch:'子', es:'Rata',    area:'Año',   areaEs:'Redes · Imagen · Industria'},
+    ],
     P_Q: {0:'evit',1:'buen',2:'exce',3:'exce',4:'buen',5:'buen',6:'evit',7:'buen',8:'exce',9:'exce',10:'buen',11:'exce'},
     IS_NOBLEMAN:{9:true,11:true},
     IS_WEALTH:{6:true,7:true},
@@ -778,6 +792,194 @@ function getSolarMonth(y,m,d){ const dt=new Date(y,m-1,d); let br=4; for(const[d
 function getOI(mb,db){ return((db-mb+12)%12); }
 function getCI(y,m,d){ const diff=Math.round((new Date(y,m-1,d)-ANCHOR_DATE)/86400000); return((ANCHOR_CONST+diff)%28+28)%28; }
 
+// ══════════════════════════════════════════════════════════════════
+// 5 CATALIZADORES — Joey Yap Ba Zi Breakthrough Bootcamp
+// ══════════════════════════════════════════════════════════════════
+
+// 六冲 6 Choques: pares que chocan
+const CLASHES={0:6,1:7,2:8,3:9,4:10,5:11,6:0,7:1,8:2,9:3,10:4,11:5};
+
+// 六合 6 Combinaciones: pares que se combinan
+const COMBO6={0:1,1:0,2:11,3:10,4:9,5:8,6:7,7:6,8:5,9:4,10:3,11:2};
+
+// 三合 3 Combinaciones: grupos de 3
+const COMBO3=[
+  {ramas:[2,6,10], elemento:'Fuego', nombre:'寅午戌 Tigre-Caballo-Perro'},
+  {ramas:[11,3,7], elemento:'Madera',nombre:'亥卯未 Cerdo-Conejo-Cabra'},
+  {ramas:[5,9,1],  elemento:'Metal', nombre:'巳酉丑 Serpiente-Gallo-Buey'},
+  {ramas:[8,0,4],  elemento:'Agua',  nombre:'申子辰 Mono-Rata-Dragón'},
+];
+
+// 三会 Combinaciones Direccionales
+const COMBO3DIR=[
+  {ramas:[2,3,4],  dir:'Este',  nombre:'寅卯辰 Este-Madera'},
+  {ramas:[5,6,7],  dir:'Sur',   nombre:'巳午未 Sur-Fuego'},
+  {ramas:[8,9,10], dir:'Oeste', nombre:'申酉戌 Oeste-Metal'},
+  {ramas:[11,0,1], dir:'Norte', nombre:'亥子丑 Norte-Agua'},
+];
+
+// 六害 6 Daños
+const HARMS={0:7,1:6,2:5,3:4,4:3,5:2,6:1,7:0,8:11,9:10,10:9,11:8};
+
+// 刑 Castigos
+const PUNISH_UNGRATEFUL={2:5,5:8,8:2};
+const PUNISH_BULLYING={7:1,1:10,10:7};
+const PUNISH_UNCIVILIZED={0:3,3:0};
+const PUNISH_SELF=new Set([4,6,9,11]);
+
+// 破 Destrucción
+const DESTRUCTION={0:9,9:0,8:5,5:8,4:1,1:4,6:3,3:6,2:11,11:2,10:7,7:10};
+
+// Función principal — analiza catalizadores del día vs los 4 pilares
+function analizarCatalizadores(db, mb){
+  const p=getP();
+  const pilares=p.PILARES;
+  const resultados=[];
+
+  for(const pilar of pilares){
+    const r=pilar.rama;
+
+    // 1. CHOQUE 六冲
+    if(CLASHES[db]===r){
+      resultados.push({
+        tipo:'choque', fuerza:-3,
+        icon:'⚡',
+        label:`Choque ${RAMA_C[db]}↔${pilar.ch}`,
+        area:pilar.area, areaEs:pilar.areaEs,
+        desc:`El día ${RAMA_ES[db]} choca con tu pilar ${pilar.area} (${pilar.es}) — puede haber turbulencia en: ${pilar.areaEs}`,
+        color:'#C04040'
+      });
+      continue; // si hay choque no verificamos combinación con el mismo pilar
+    }
+
+    // 2. COMBINACIÓN 六合
+    if(COMBO6[db]===r){
+      resultados.push({
+        tipo:'combo6', fuerza:3,
+        icon:'✨',
+        label:`Combinación ${RAMA_C[db]}+${pilar.ch}`,
+        area:pilar.area, areaEs:pilar.areaEs,
+        desc:`${RAMA_ES[db]} se combina con tu pilar ${pilar.area} (${pilar.es}) — activa y potencia: ${pilar.areaEs}`,
+        color:'#5A7A2A'
+      });
+    }
+
+    // 3. DAÑO 六害
+    if(HARMS[db]===r){
+      resultados.push({
+        tipo:'daño', fuerza:-2,
+        icon:'🩹',
+        label:`Daño ${RAMA_C[db]}↔${pilar.ch}`,
+        area:pilar.area, areaEs:pilar.areaEs,
+        desc:`Daño sutil en pilar ${pilar.area} — puede haber desgaste o traición en: ${pilar.areaEs}`,
+        color:'#C88020'
+      });
+    }
+
+    // 4. CASTIGO 刑
+    let castigo=null;
+    if(PUNISH_UNGRATEFUL[db]===r) castigo='Ingratitud';
+    else if(PUNISH_BULLYING[db]===r) castigo='Intimidación';
+    else if(PUNISH_UNCIVILIZED[db]===r) castigo='Descortesía';
+    else if(PUNISH_SELF.has(db)&&db===r) castigo='Auto-castigo';
+    if(castigo){
+      resultados.push({
+        tipo:'castigo', fuerza:-2,
+        icon:'⚠️',
+        label:`Castigo ${castigo} ${RAMA_C[db]}↔${pilar.ch}`,
+        area:pilar.area, areaEs:pilar.areaEs,
+        desc:`Castigo de ${castigo} afecta pilar ${pilar.area} — cuidado con conflictos en: ${pilar.areaEs}`,
+        color:'#8B5A00'
+      });
+    }
+
+    // 5. DESTRUCCIÓN 破
+    if(DESTRUCTION[db]===r){
+      resultados.push({
+        tipo:'destruccion', fuerza:-1,
+        icon:'💔',
+        label:`Destrucción ${RAMA_C[db]}↔${pilar.ch}`,
+        area:pilar.area, areaEs:pilar.areaEs,
+        desc:`Destrucción afecta pilar ${pilar.area} — puede haber inestabilidad en: ${pilar.areaEs}`,
+        color:'#7A3A8A'
+      });
+    }
+  }
+
+  // 6. TRES COMBINACIONES 三合 — día + mes + algún pilar
+  const ramasPilares=pilares.map(p=>p.rama);
+  for(const combo of COMBO3){
+    if(!combo.ramas.includes(db)) continue;
+    const otrasNecesarias=combo.ramas.filter(r=>r!==db);
+    const tieneConMes=otrasNecesarias.includes(mb);
+    const tieneConPilar=otrasNecesarias.filter(r=>ramasPilares.includes(r));
+    if(tieneConMes&&tieneConPilar.length>0){
+      // Combinación de 3 completa — día + mes + pilar
+      const pilarActivado=pilares.filter(p=>otrasNecesarias.includes(p.rama));
+      resultados.push({
+        tipo:'combo3', fuerza:5,
+        icon:'🌟',
+        label:`三合 ${combo.nombre}`,
+        area:'MÚLTIPLE', areaEs:pilarActivado.map(p=>p.areaEs).join(' + '),
+        desc:`⭐ TRIPLE COMBINACIÓN ${combo.nombre} — día+mes+pilar activa fuertemente: ${pilarActivado.map(p=>p.areaEs).join(' y ')}`,
+        color:'#3A5A10'
+      });
+    } else if(tieneConPilar.length>=2){
+      // Combinación con 2 pilares
+      const pilarActivado=pilares.filter(p=>otrasNecesarias.includes(p.rama));
+      resultados.push({
+        tipo:'combo3', fuerza:4,
+        icon:'⭐',
+        label:`三合 ${combo.nombre} (2 pilares)`,
+        area:'MÚLTIPLE', areaEs:pilarActivado.map(p=>p.areaEs).join(' + '),
+        desc:`COMBINACIÓN ${combo.nombre} activa tus pilares: ${pilarActivado.map(p=>p.area+' '+p.areaEs).join(' y ')}`,
+        color:'#5A7A2A'
+      });
+    }
+  }
+
+  // 7. TRES COMBINACIONES DIRECCIONALES 三会
+  for(const combo of COMBO3DIR){
+    if(!combo.ramas.includes(db)) continue;
+    const otras=combo.ramas.filter(r=>r!==db);
+    const tieneConMes=otras.includes(mb);
+    const conPilares=otras.filter(r=>ramasPilares.includes(r));
+    if(tieneConMes&&conPilares.length>0){
+      const pilarActivado=pilares.filter(p=>conPilares.includes(p.rama));
+      resultados.push({
+        tipo:'combo3dir', fuerza:5,
+        icon:'🌟',
+        label:`三会 ${combo.nombre}`,
+        area:'MÚLTIPLE', areaEs:pilarActivado.map(p=>p.areaEs).join(' + '),
+        desc:`⭐ COMBINACIÓN DIRECCIONAL ${combo.nombre} — activación poderosa: ${pilarActivado.map(p=>p.areaEs).join(' y ')}`,
+        color:'#8B6914'
+      });
+    }
+  }
+
+  // Ordenar por fuerza — combinaciones primero (positivas), luego negativos
+  resultados.sort((a,b)=>b.fuerza-a.fuerza);
+  return resultados;
+}
+
+// Calcula el ajuste de rating basado en catalizadores
+function ajustarRatingConCatalizadores(rating, catalizadores){
+  if(!catalizadores.length) return rating;
+  const tieneComboFuerte=catalizadores.some(c=>c.fuerza>=4);
+  const tieneChoquePersonal=catalizadores.some(c=>c.tipo==='choque'&&(c.area==='Día★'||c.area==='Mes'));
+  const soloNegativo=catalizadores.every(c=>c.fuerza<0);
+  // Combo fuerte siempre gana
+  if(tieneComboFuerte&&rating!=='evit') return rating==='neut'?'buen':rating==='buen'?'exce':rating;
+  // Choque personal degrada
+  if(tieneChoquePersonal&&!tieneComboFuerte){
+    if(rating==='triple') return 'exce';
+    if(rating==='exce') return 'buen';
+    if(rating==='buen') return 'prec';
+    if(rating==='neut') return 'evit';
+  }
+  return rating;
+}
+
 function analyzeDay(y,m,d){
   const p=getP();
   const db_=getDayBranch(y,m,d), si=getDayStem(y,m,d), mb=getSolarMonth(y,m,d);
@@ -801,7 +1003,11 @@ function analyzeDay(y,m,d){
   else if(pq==='neut'&&oq==='exce'&&(cq==='exce'||cq==='buen')&&isYel){rating='buen';}
   else if(pq==='neut'&&oq==='exce'){rating='neut';}
   else{rating='neut';}
-  return{db:db_,si,mb,oi,ci,pq,oq,cq,isYel,isN,isW,isLP,isPB,isCW,isWCL,isYM,rating,flags,isYB,isMB};
+  // Catalizadores
+  const catalysts=analizarCatalizadores(db_,mb);
+  const ratingFinal=ajustarRatingConCatalizadores(rating,catalysts);
+  return{db:db_,si,mb,oi,ci,pq,oq,cq,isYel,isN,isW,isLP,isPB,isCW,isWCL,isYM,
+    rating:ratingFinal,ratingBase:rating,flags,isYB,isMB,catalysts};
 }
 
 function fmtFecha(m,d){ return `2026-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
@@ -994,7 +1200,44 @@ function renderDetalle(){
   const tema=getTema(d.si);
   const temaHtml='<div style="margin-bottom:10px;padding:12px 14px;border-radius:10px;background:'+tema.color+'22;border:2px solid '+tema.color+'44"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:20px">'+tema.icon+'</span><div><div style="font-size:9px;color:'+tema.color+';font-weight:700;letter-spacing:1px;font-family:sans-serif">TEMA DEL DÍA</div><div style="font-size:15px;font-weight:800;color:'+tema.color+';font-family:sans-serif">'+tema.nombre+'</div></div></div><div style="font-size:12px;color:var(--txt-s);line-height:1.6;font-family:sans-serif">'+tema.desc+'</div></div>';
 
-  // Diario
+  // Catalizadores — construir HTML
+  let catalystsHtml='';
+  if(d.catalysts&&d.catalysts.length>0){
+    const combos=d.catalysts.filter(c=>c.fuerza>0);
+    const negativos=d.catalysts.filter(c=>c.fuerza<0);
+    let items='';
+    if(combos.length){
+      items+=combos.map(c=>`
+        <div style="padding:8px 10px;border-radius:8px;margin-bottom:5px;
+          background:${c.color}18;border-left:3px solid ${c.color}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+            <span style="font-size:14px">${c.icon}</span>
+            <span style="font-size:11px;font-weight:800;color:${c.color};font-family:sans-serif">${c.label}</span>
+            <span style="font-size:9px;background:${c.color};color:white;padding:1px 5px;border-radius:4px;font-family:sans-serif">${c.area}</span>
+          </div>
+          <div style="font-size:11px;color:var(--txt-s);line-height:1.5;font-family:sans-serif">${c.desc}</div>
+        </div>`).join('');
+    }
+    if(negativos.length){
+      items+=negativos.map(c=>`
+        <div style="padding:8px 10px;border-radius:8px;margin-bottom:5px;
+          background:${c.color}12;border-left:3px solid ${c.color}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+            <span style="font-size:14px">${c.icon}</span>
+            <span style="font-size:11px;font-weight:800;color:${c.color};font-family:sans-serif">${c.label}</span>
+            <span style="font-size:9px;background:${c.color};color:white;padding:1px 5px;border-radius:4px;font-family:sans-serif">${c.area}</span>
+          </div>
+          <div style="font-size:11px;color:var(--txt-s);line-height:1.5;font-family:sans-serif">${c.desc}</div>
+        </div>`).join('');
+    }
+    catalystsHtml=`
+      <div style="margin-bottom:10px">
+        <div style="font-size:9px;color:var(--txt-m);font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:sans-serif">
+          5 CATALIZADORES — INTERACCIONES CON TUS PILARES
+        </div>
+        ${items}
+      </div>`;
+  }
   const ds=state.diarioState;
 
   cont.innerHTML=`
@@ -1007,6 +1250,7 @@ function renderDetalle(){
         <div class="det-badge" style="background:${rs.bd}">${rs.lb}</div>
       </div>
       ${temaHtml}
+      ${catalystsHtml}
       <div class="camino-banner" style="background:${d.isYel?'var(--prec-b)':'var(--evit-b)'};color:${d.isYel?'var(--gold-d)':'var(--evit-t)'};border:1px solid ${d.isYel?'var(--gold)':'var(--evit-d)'}">
         ${d.isYel?`☀ CAMINO AMARILLO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`:`🖤 CAMINO NEGRO · ${SPIRIT_C[d.oi]} — ${SPIRIT_ES[d.oi]}`}
       </div>
