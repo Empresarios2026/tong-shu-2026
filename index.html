@@ -520,8 +520,65 @@ const IS_YELLOW = [true,true,false,false,true,true,false,true,false,false,true,f
 
 const CONS_C  = ['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁','奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'];
 const CONS_ES = ['Cuerno','Cuello','Cimiento','Cuarto','Corazón','Cola','Cesto','Cucharón','Buey','Doncella','Vacío','Peligro','Recinto','Muro','Pilar','Lazo','Estómago','Pléyades','Red','Pico','Orión','Pozo','Fantasma','Sauce','Estrella','Arco','Alas','Carro'];
-const CONS_Q  = ['buen','evit','buen','buen','evit','exce','buen','buen','evit','neut','evit','evit','exce','exce','neut','exce','buen','evit','buen','evit','buen','neut','evit','evit','buen','exce','evit','neut'];
-const CONS_ACT= ['Auspiciosa general','Evitar — puede generar disputas','Buena para construcción y negocios','Muy auspiciosa — actividades importantes','Negativa — solo viajes o cosecha','★ Contratos, FS, remodelación — ayuda de nobles','Construcción, cobros — no matrimonio','Comercio, riqueza, FS','Estrella desastre — evitar todo negocio','Actividades internas y académicas','Pura negativa — ninguna actividad','Solo cobro de deudas','★ Nuevo negocio, construcción, activos','★ Firma contratos, apertura oficial, prosperidad','Malo apertura — bueno viajes y remodelaciones','★ Sin atributos negativos — guardián de riqueza','Matrimonio y asuntos externos/públicos','Extremadamente feroz — evitar todo','Construcción, tierra, matrimonio — benevolente','Altamente negativa — evitar todo','FS, viajes, remodelación, fama y logros','Uso limitado — solo FS o groundbreaking','Negativa — no matrimonio ni construcción','Evitar activación FS','Negociaciones, aperturas oficiales, claridad','★ Extremadamente positiva — todos los negocios','Negativa para mayoría de actividades','Tolerancia y acuerdo — para cerrar conflictos'];
+const CONS_Q  = ['buen','evit','evit','buen','evit','exce','buen','buen','evit','neut','evit','evit','exce','exce','buen','exce','buen','evit','buen','evit','buen','neut','evit','evit','buen','exce','evit','neut'];
+const CONS_ACT= [
+  // 1. 角 Cuerno — Dragón Verde Este
+  '✓ Matrimonio, viajes y movimientos de tierra. Atrae riqueza y éxito. Ideal para liderazgo y captaciones estratégicas.',
+  // 2. 亢 Cuello
+  '⚠️ Uso muy limitado. Evitar matrimonios, construcción e inversiones. Solo para disolver vínculos negativos.',
+  // 3. 氐 Base
+  '⚠️ Negativa para la mayoría de actividades. Útil solo para oratoria e inversiones inmobiliarias muy específicas. Riesgo de conflictos.',
+  // 4. 房 Cuarto
+  '✓ Matrimonio, viajes de larga distancia y prosperidad familiar. Ideal para consolidar relaciones y acuerdos de largo plazo.',
+  // 5. 心 Corazón
+  '⚠️ Negativa en selección de fechas general. Solo útil para viajes comerciales específicos y cosecha de resultados previos.',
+  // 6. 尾 Cola
+  '★ Contratos, alineación de puertas, matrimonio y Feng Shui. Duplica y multiplica vibraciones de fortuna. Protege la retaguardia.',
+  // 7. 箕 Cesta
+  '✓ Cobro de deudas, excavaciones y activaciones de Feng Shui. Evitar ceremonias matrimoniales. Buena para recuperar lo que te deben.',
+  // 8. 斗 Cazo — Tortuga Negra Norte
+  '✓ Éxito en negocios y presentaciones públicas. Ideal para alinear puertas de negocios. Activar antes de lanzamientos importantes.',
+  // 9. 牛 Buey
+  '✗ Inauspiciosa. Desastre absoluto para matrimonios y contratos. Evitar cualquier acuerdo o firma importante.',
+  // 10. 女 Doncella
+  '— Excelente para estudios académicos y actividades internas. Evitar negocios externos. Favorece la planificación y estrategia privada.',
+  // 11. 虚 Vacío
+  '✗ Agujero Negro — absorbe toda energía. Ninguna actividad de importancia. Evitar completamente.',
+  // 12. 危 Peligro
+  '✗ Riesgo de daño físico. Útil exclusivamente para recuperar deudas o reclamar lo que es tuyo legítimamente.',
+  // 13. 室 Recinto
+  '★ Multiplicación de activos, nuevos negocios y apertura de proyectos. Excelente para lanzar EI en nuevos mercados.',
+  // 14. 壁 Muro
+  '★ Prosperidad sostenida, firma de contratos y aperturas oficiales. Construye blindaje estructural para el negocio.',
+  // 15. 奎 Horcajadas — Tigre Blanco Oeste
+  '✓ Positiva para viajes, renovaciones físicas y reestructuración. Buena para reiniciar proyectos o cambiar de estrategia.',
+  // 16. 娄 Lazo
+  '★ Sin atributos negativos. Altamente favorable para expansión, matrimonio y cualquier actividad de importancia. Guardián de riqueza.',
+  // 17. 胃 Estómago
+  '✓ Nobleza y riqueza. Ideal para asuntos públicos, presentaciones externas y captaciones de alto perfil. Cosecha de estatus.',
+  // 18. 昴 Pléyades
+  '✗ Energía letal — "Colmillo Blanco". Solo para litigios, defensas legales o situaciones de ataque directo. Evitar en general.',
+  // 19. 毕 Red
+  '✓ Armonía y paz. Ideal para construcción, compra de tierras y reiniciar proyectos estancados. Buena para firmas inmobiliarias.',
+  // 20. 觜 Pico
+  '✗ Muy negativa. Evitar cualquier actividad de importancia. No firmar, no lanzar, no captar.',
+  // 21. 参 Orión
+  '✓ Fama y logros en viajes, construcción y proyectos. Evitar matrimonios. Ideal para posicionamiento y visibilidad de EI.',
+  // 22. 井 Pozo — Fénix Rojo Sur
+  '— Activación de Feng Shui y lanzamientos de proyectos. Fomenta la cooperación y el apoyo de terceros. Útil con precaución.',
+  // 23. 鬼 Fantasma
+  '✗ Inauspiciosa. Evitar matrimonios y viajes. Solo útil para retirada estratégica o gestión de situaciones de miedo.',
+  // 24. 柳 Sauce
+  '✗ Evitar activaciones de Feng Shui, puertas y agua. Útil solo para desapego emocional y cortar vínculos que ya no sirven.',
+  // 25. 星 Estrella
+  '✓ Negociaciones, aperturas oficiales y planificación de futuro. Invoca claridad mental extrema. Ideal para reuniones estratégicas.',
+  // 26. 张 Arco
+  '★ Extremadamente positiva. Éxito comercial absoluto. Punto de máxima fe — unir mentes y corazones. La mejor para cierres de EI.',
+  // 27. 翼 Alas
+  '⚠️ Negativa para eventos sociales y lanzamientos. Ideal para el "escape" — retirada táctica segura cuando el mercado colapsa.',
+  // 28. 轸 Carruaje
+  '— Fomenta acuerdos, tolerancia y dirección clara. Útil para cerrar conflictos y lograr consenso en negociaciones hostiles.',
+];
 
 // ══════════════════════════════════════════════════════════════════
 // PERFILES — datos personales por persona
