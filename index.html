@@ -332,6 +332,7 @@
 function imprimirMes(){
   const p=getP();
   const md=MESES.find(m=>m.m===state.mes);
+  const pmd=p.MESES_DATA[state.mes]||{};
   const celdas=getCeldas();
   const dias=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   const firstDow=new Date(2026,state.mes-1,1).getDay();
@@ -383,7 +384,7 @@ function imprimirMes(){
       <!-- Nombre del mes -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="font-size:22px;font-weight:800">${md.n} 2026 <span style="font-size:14px;color:#888;font-weight:400">${md.calMes}</span></div>
-        <div style="font-size:11px;color:#888;font-family:sans-serif">${p.MESES_NOTA[state.mes]||''}</div>
+        <div style="font-size:11px;color:#888;font-family:sans-serif;max-width:50%;text-align:right">${pmd.nota||''}</div>
       </div>
 
       <!-- Calendario -->
@@ -634,16 +635,33 @@ const PERFILES = {
       {id:'campanas', lb:'📣 Campañas',  oi:[10,2,8],icon:'→',dir:'Este (QM Riqueza)',  tip:'Este = sector QM de Riqueza'},
       {id:'cobros',   lb:'💵 Cobros',    oi:[9,2,8], icon:'←',dir:'Oeste (天医 +3)',    tip:'Tian Yi activa flujo de cobros'},
     ],
-    MESES_NOTA:{
-      5:'Mayo 1–4: mes 辰 Dragón. Desde el 5: mes 巳 Serpiente.',
-      6:'⚠️ Mes Caballo en Año Caballo — doble choque. Minimiza compromisos críticos.',
-      7:'Mes 未 Cabra activa tu Luck Pillar actual 己未. Energía de expansión.',
-      8:'✨ Tu mejor mes. Mes Mono activa 申子辰. Lanza lo más importante de EI.',
-      9:'Segunda mejor ventana. Mes Gallo estable — cierres y contratos.',
-      10:'Mes estable. Selecciona días con triple alineación.',
-      11:'Mes 亥 resuena con tu Hora natal. Bueno para relaciones y networking.',
-      12:'⚠️ Mes Rata activa penalización de tus pilares. Actividades internas.',
+    // Elementos favorables para 壬 DM fuerte en Agua
+    // Fav: Fuego(DD/riqueza), Madera(CD/output), Tierra(OD/autoridad)
+    // Desfav: Agua(exceso), Metal(alimenta Agua)
+    FAV_ELEM: new Set([2,3,4,5,0,1]), // stems Fuego(2,3), Madera(0,1), Tierra(4,5)
+    DESFAV_ELEM: new Set([6,7,8,9]),  // stems Metal(6,7), Agua(8,9)
+    FAV_TRIO: new Set([2,3,0,1,4]),   // elementos producidos favorables: Fuego, Madera, Tierra
+    DESFAV_TRIO: new Set([5,6]),      // Agua y Metal desfavorables como producto de trio
+    // Análisis mensual personalizado — tronco + rama + impacto real
+    MESES_DATA:{
+      5: {alerta:'MIXTO',      color:'#8B6914',
+          nota:'癸巳: Tronco 癸 Agua (desfav) + Rama 巳 Fuego (riqueza ✅). Mes mixto — días con tronco Fuego son tus mejores captaciones.'},
+      6: {alerta:'⚠️ DIFÍCIL', color:'#C04040',
+          nota:'甲午: Tronco 甲 Madera (fav ✅) + Rama 午 Caballo choca tu pilar Mes/Día 子子. Energía activa pero conflictiva — precaución con decisiones clave.'},
+      7: {alerta:'✅ BUENO',   color:'#1565C0',
+          nota:'乙未: Tronco 乙 Madera (fav ✅) + Rama 未 Tierra (fav ✅) activa tu Luck Pillar 己未. Mes de expansión real — lanza proyectos con sustancia.'},
+      8: {alerta:'MIXTO',      color:'#8B6914',
+          nota:'丙申: Tronco 丙 Fuego = tu Riqueza ✅ (arriba favorable). Rama 申 Metal + activa trío 申子辰 Agua (desfav ⚠️). Mes mixto — aprovecha el tronco Fuego, gestiona la carga de Agua abajo.'},
+      9: {alerta:'✅ BUENO',   color:'#4A6A15',
+          nota:'丁酉: Tronco 丁 Fuego = tu Riqueza ✅ + Rama 酉 Gallo es tu Flor de Melocotón 🌸. Buen mes para captaciones, atracción de clientes y cierres.'},
+      10:{alerta:'✅ SÓLIDO',  color:'#5A7A2A',
+          nota:'戊戌: Tronco 戊 Tierra (fav ✅) + Rama 戌 Tierra (fav ✅). Mes de doble autoridad y estructura. Consolida contratos y relaciones de EI.'},
+      11:{alerta:'MIXTO',      color:'#8B6914',
+          nota:'己亥: Tronco 己 Tierra (fav ✅) + Rama 亥 Cerdo = tu pilar Hora natal. Activa EI y proyectos pero también Agua. Mes interno — networking y planificación.'},
+      12:{alerta:'⚠️ EXIGENTE',color:'#C04040',
+          nota:'庚子: Tronco 庚 Metal (desfav ⚠️) alimenta Agua + Rama 子 Rata auto-penalización. Mes más exigente del año. Solo actividades internas y mantenimiento.'},
     },
+    MESES_NOTA:{},// legacy — ya no se usa, reemplazado por MESES_DATA
     TEMA_DIA:{
       0:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yang activa tu Comiendo Dios. Crea contenido y desarrolla proyectos nuevos.'},
       1:{icon:'🎨',nombre:'Creación',   color:'#5A7A2A',desc:'Madera Yin activa tu Recurso Directo. Creatividad con sustancia — planifica y construye.'},
@@ -712,16 +730,32 @@ const PERFILES = {
       {id:'campanas', lb:'📣 Campañas',  oi:[10,2,8],icon:'→',dir:'Este (天医 +3)',      tip:'Este = Tian Yi — dinero y salud'},
       {id:'cobros',   lb:'💵 Cobros',    oi:[9,2,8], icon:'↓',dir:'Sur (延年 +2)',       tip:'Sur activa Yan Nian — cobros'},
     ],
-    MESES_NOTA:{
-      5:'Mayo: mes 巳 Serpiente. Energía de Metal activa días de riqueza.',
-      6:'⚠️ Mes Caballo en Año Caballo — choca tu Day Branch 午午. Precaución.',
-      7:'Mes 未 Cabra — Output Earth. Días creativos y de producción.',
-      8:'✨ Mes Mono activa riqueza Metal. Excelente para captaciones y cierres.',
-      9:'Mes Gallo 酉 — tu Noble y Riqueza. Segunda mejor ventana del año.',
-      10:'Mes Perro 戌 — completa 寅午戌 Fire combo. Mes de fortaleza personal.',
-      11:'Mes Cerdo 亥 — tu Noble Celestial activo. Bueno para relaciones.',
-      12:'⚠️ Mes Rata choca tu Day Branch 午. Minimiza compromisos críticos.',
+    // Elementos favorables para 丙 DM Fuego Yang
+    // Fav: Metal(DD/riqueza), Agua(OD/autoridad), Madera(recurso)
+    // Desfav: Fuego(exceso), Tierra(output que drena)
+    FAV_ELEM: new Set([6,7,8,9,0,1]),  // Metal(6,7), Agua(8,9), Madera(0,1)
+    DESFAV_ELEM: new Set([2,3,4,5]),   // Fuego(2,3), Tierra(4,5)
+    FAV_TRIO: new Set([6,7,8,9,0,1]),  // Metal, Agua, Madera favorables
+    DESFAV_TRIO: new Set([2,3,4,5]),   // Fuego y Tierra desfavorables como producto
+    MESES_DATA:{
+      5: {alerta:'MIXTO',      color:'#8B6914',
+          nota:'癸巳: Tronco 癸 Agua (autoridad ✅) + Rama 巳 Fuego (exceso ⚠️). Mes mixto — usa días con Metal o Agua para actividades clave.'},
+      6: {alerta:'⚠️ DIFÍCIL', color:'#C04040',
+          nota:'甲午: Rama 午 Caballo choca tu Day Branch 午午 (auto-penalización). Mes más difícil — minimiza compromisos críticos.'},
+      7: {alerta:'MIXTO',      color:'#8B6914',
+          nota:'乙未: Tronco 乙 Madera (recurso ✅) + Rama 未 Tierra (drena ⚠️). Mes mixto con días de buena claridad mental.'},
+      8: {alerta:'✅ BUENO',   color:'#4A6A15',
+          nota:'丙申: Tronco 丙 Fuego (exceso ⚠️) PERO Rama 申 Metal = tu Riqueza ✅ + activa trío 申子辰 (favorece recursos). Mes con buenas ventanas de riqueza.'},
+      9: {alerta:'✅ EXCELENTE',color:'#3A5A10',
+          nota:'丁酉: Rama 酉 Gallo = tu Noble 贵人 + Riqueza Metal ✅. Mejor mes para captaciones, cierres y atracción de clientes VIP.'},
+      10:{alerta:'MIXTO',      color:'#8B6914',
+          nota:'戊戌: Tronco 戊 Tierra (drena ⚠️) + Rama 戌 Perro completa 寅午戌 Fuego (exceso ⚠️). Mes exigente — selecciona bien los días.'},
+      11:{alerta:'✅ BUENO',   color:'#4A6A15',
+          nota:'己亥: Tronco 己 Tierra (drena) PERO Rama 亥 Cerdo = tu Noble 贵人 ✅. Buen mes para relaciones, networking y acuerdos.'},
+      12:{alerta:'⚠️ EXIGENTE',color:'#C04040',
+          nota:'庚子: Tronco 庚 Metal (riqueza ✅) positivo arriba. Rama 子 Rata choca tu Day Branch 午. Mes mixto-exigente — aprovecha el tronco.'},
     },
+    MESES_NOTA:{},
     TEMA_DIA:{
       0:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Madera Yang activa tu Recurso Directo. Claridad mental elevada. Ideal para planificar y tomar decisiones.'},
       1:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',desc:'Madera Yin activa tu Recurso Indirecto. Excelente para investigar y profundizar en estrategia.'},
@@ -782,14 +816,14 @@ const SOL_M = [
 ];
 
 const MESES = [
-  {m:5, n:'Mayo',       d:31,calMes:'巳 Serpiente',color:'#8B6914',alerta:null},
-  {m:6, n:'Junio',      d:30,calMes:'午 Caballo',  color:'#C04040',alerta:'DIFÍCIL'},
-  {m:7, n:'Julio',      d:31,calMes:'未 Cabra',    color:'#1565C0',alerta:null},
-  {m:8, n:'Agosto',     d:31,calMes:'申 Mono',     color:'#3A5A10',alerta:'✨ EXCELENTE'},
-  {m:9, n:'Septiembre', d:30,calMes:'酉 Gallo',    color:'#4A6A15',alerta:null},
-  {m:10,n:'Octubre',    d:31,calMes:'戌 Perro',    color:'#8B6914',alerta:null},
-  {m:11,n:'Noviembre',  d:30,calMes:'亥 Cerdo',    color:'#4A6A15',alerta:null},
-  {m:12,n:'Diciembre',  d:31,calMes:'子 Rata',     color:'#C88020',alerta:'PRECAUCIÓN'},
+  {m:5, n:'Mayo',       d:31,calMes:'癸巳 Agua-Serpiente', stemIdx:9,  color:'#8B6914',alerta:null},
+  {m:6, n:'Junio',      d:30,calMes:'甲午 Madera-Caballo', stemIdx:0,  color:'#C04040',alerta:null},
+  {m:7, n:'Julio',      d:31,calMes:'乙未 Madera-Cabra',   stemIdx:1,  color:'#1565C0',alerta:null},
+  {m:8, n:'Agosto',     d:31,calMes:'丙申 Fuego-Mono',     stemIdx:2,  color:'#8B6914',alerta:null},
+  {m:9, n:'Septiembre', d:30,calMes:'丁酉 Fuego-Gallo',    stemIdx:3,  color:'#4A6A15',alerta:null},
+  {m:10,n:'Octubre',    d:31,calMes:'戊戌 Tierra-Perro',   stemIdx:4,  color:'#8B6914',alerta:null},
+  {m:11,n:'Noviembre',  d:30,calMes:'己亥 Tierra-Cerdo',   stemIdx:5,  color:'#4A6A15',alerta:null},
+  {m:12,n:'Diciembre',  d:31,calMes:'庚子 Metal-Rata',     stemIdx:6,  color:'#C88020',alerta:null},
 ];
 
 const FILTROS_DATA = [
@@ -1135,15 +1169,22 @@ function descargarCSV(){
 // ══════════════════════════════════════════════════════════════════
 function renderMesScroll(){
   const el=document.getElementById('mes-scroll');
-  el.innerHTML=MESES.map(m=>`
-    <button class="mes-btn${state.mes===m.m?' active':''}"
-      style="${state.mes===m.m?`border-color:${m.color};background:${m.color};`:''}"
-      onclick="selMes(${m.m})">${m.n}</button>
-  `).join('');
+  el.innerHTML=MESES.map(m=>{
+    const md=getP().MESES_DATA[m.m]||{};
+    const color=md.color||m.color;
+    const sel=state.mes===m.m;
+    return `<button class="mes-btn${sel?' active':''}"
+      style="${sel?`border-color:${color};background:${color};`:''}"
+      onclick="selMes(${m.m})">${m.n}</button>`;
+  }).join('');
 }
 
 function renderMesInfo(){
   const md=MESES.find(m=>m.m===state.mes);
+  const pmd=getP().MESES_DATA[state.mes]||{};
+  const alerta=pmd.alerta||null;
+  const color=pmd.color||md.color;
+  const nota=pmd.nota||'';
   const celdas=getCeldas();
   const cnt=(r)=>celdas.filter(c=>c&&c.rating===r).length;
   const wCnt=celdas.filter(c=>c&&c.isW&&c.rating!=='evit').length;
@@ -1152,11 +1193,11 @@ function renderMesInfo(){
     <div class="mes-head">
       <div>
         <span class="mes-nombre">${md.n} 2026</span>
-        <span class="mes-sub">${md.calMes}</span>
+        <span class="mes-sub" style="font-size:11px;color:var(--txt-m);margin-left:6px">${md.calMes}</span>
       </div>
-      ${md.alerta?`<div class="mes-badge" style="background:${md.color}">${md.alerta}</div>`:''}
+      ${alerta?`<div class="mes-badge" style="background:${color}">${alerta}</div>`:''}
     </div>
-    <div class="mes-nota">${getP().MESES_NOTA[state.mes]||''}</div>
+    <div class="mes-nota">${nota}</div>
     <div class="mes-stats">
       <span style="color:var(--triple-t);font-weight:700">★★★ ${cnt('triple')}</span>
       <span style="color:var(--exce-t);font-weight:700">★★ ${cnt('exce')}</span>
