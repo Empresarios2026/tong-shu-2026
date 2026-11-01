@@ -230,11 +230,60 @@
     </button>
   </div>
 </div>
+<!-- MODAL TERCERA PERSONA -->
+<div id="modal-persona" style="display:none;position:fixed;inset:0;background:rgba(44,24,16,.75);z-index:9000;overflow-y:auto;padding:16px">
+  <div style="background:var(--card);max-width:460px;margin:0 auto;border-radius:14px;padding:18px;border:1px solid var(--gold);font-family:sans-serif">
+    <div style="font-size:16px;font-weight:800;color:var(--brown);font-family:Georgia,serif" id="pp-titulo">＋ Agregar persona</div>
+    <div style="font-size:11px;color:var(--txt-s);margin:4px 0 12px">Ingresa los datos de nacimiento y el calendario se calcula con su carta Ba Zi.</div>
+    <style>
+      .pp-l{font-size:10px;font-weight:700;color:var(--txt-s);margin:8px 0 3px;display:block}
+      .pp-i{width:100%;padding:9px;border-radius:8px;border:1px solid var(--gold-l);background:#fff;font-size:16px;color:var(--txt);font-family:sans-serif}
+    </style>
+    <label class="pp-l">Nombre</label>
+    <input id="pp-nombre" class="pp-i" type="text" maxlength="24" placeholder="Nombre" oninput="actualizarPreviewPersona()"/>
+    <label class="pp-l">Género (define dirección de los Pilares de Suerte y el Gua)</label>
+    <select id="pp-genero" class="pp-i" onchange="actualizarPreviewPersona()">
+      <option value="F">Mujer</option><option value="M">Hombre</option>
+    </select>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label class="pp-l">Fecha de nacimiento</label>
+        <input id="pp-fecha" class="pp-i" type="date" min="1900-01-01" max="2025-12-31" oninput="actualizarPreviewPersona()"/></div>
+      <div style="flex:1"><label class="pp-l">Hora (local)</label>
+        <input id="pp-hora" class="pp-i" type="time" oninput="actualizarPreviewPersona()"/></div>
+    </div>
+    <label class="pp-l">Lugar de nacimiento</label>
+    <input id="pp-lugar" class="pp-i" type="text" placeholder="Ej: Arequipa, Perú" oninput="actualizarPreviewPersona()"/>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label class="pp-l">Longitud (° — oeste negativo)</label>
+        <input id="pp-lon" class="pp-i" type="number" step="0.1" value="-71.5" oninput="actualizarPreviewPersona()"/></div>
+      <div style="flex:1"><label class="pp-l">Huso horario (UTC)</label>
+        <input id="pp-huso" class="pp-i" type="number" step="0.5" value="-5" oninput="actualizarPreviewPersona()"/></div>
+    </div>
+    <div style="font-size:9px;color:var(--txt-m);margin-top:3px">Arequipa: −71.5 y −5. Con la longitud se corrige a hora solar verdadera para el pilar Hora.</div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label class="pp-l">Fuerza del Maestro del Día</label>
+        <select id="pp-fuerza" class="pp-i" onchange="actualizarPreviewPersona()">
+          <option value="auto">Automática (estimación)</option><option value="fuerte">Fuerte</option><option value="debil">Débil</option>
+        </select></div>
+      <div style="flex:1"><label class="pp-l">Gua (opcional)</label>
+        <select id="pp-gua" class="pp-i" onchange="actualizarPreviewPersona()">
+          <option value="">Calcular</option><option>1</option><option>2</option><option>3</option><option>4</option><option>6</option><option>7</option><option>8</option><option>9</option>
+        </select></div>
+    </div>
+    <div id="pp-preview" style="margin-top:12px;background:var(--cream);border-radius:9px;padding:10px;font-size:11px;color:var(--txt);min-height:44px">Completa fecha y hora para ver la carta.</div>
+    <div id="pp-error" style="font-size:11px;color:#C04040;min-height:16px;margin-top:6px"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="cerrarModalPersona()" style="flex:1;padding:11px;border-radius:9px;border:1px solid var(--gold-l);background:transparent;color:var(--txt-s);font-size:13px;cursor:pointer">Cancelar</button>
+      <button onclick="guardarPersona()" style="flex:2;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,#8B6914,#C8A96E);color:#fff;font-size:13px;font-weight:800;cursor:pointer">Guardar y calcular</button>
+    </div>
+  </div>
+</div>
+
 <div class="hdr">
   <div class="hdr-sub">TONG SHU PERSONAL · 2026</div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
     <div id="hdr-persona-name" class="hdr-name">Zulema</div>
-    <div id="persona-selector" style="display:flex;gap:6px"></div>
+    <div id="persona-selector" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"></div>
   </div>
   <div id="hdr-persona-dm" class="hdr-desc">壬子 Water Rat · 8 Capas · Verificado 2026</div>
   <div class="hdr-tags">
@@ -433,7 +482,7 @@ function imprimirMes(){
 
       <!-- Horas auspiciosas -->
       <div style="background:#FAF6EF;border-radius:8px;padding:10px;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:800;color:#4A2C1A;margin-bottom:6px;font-family:sans-serif">🕐 Horas Auspiciosas Personales</div>
+        <div style="font-size:11px;font-weight:800;color:#4A2C1A;margin-bottom:6px;font-family:sans-serif">🕐 Horas Auspiciosas Personales <span style="font-size:8px;opacity:.6;font-weight:400">· hora solar verdadera Arequipa (−14 min)</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
           ${p.HORAS.filter(h=>['triple','exce'].includes(h.rating)).map(h=>`
             <span style="padding:3px 10px;border-radius:6px;font-size:11px;font-family:sans-serif;
@@ -1104,6 +1153,349 @@ function analyzeDay(y,m,d){
 function fmtFecha(m,d){ return `2026-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
 
 // ══════════════════════════════════════════════════════════════════
+// HORA SOLAR VERDADERA — Arequipa (71.5°O vs meridiano 75°O = +14 min)
+// Hora civil = hora solar − 14 min
+// ══════════════════════════════════════════════════════════════════
+const SOLAR_CORR_MIN = 14;
+function horaCivilRama(i){
+  const ini=((23+2*i)*60 - SOLAR_CORR_MIN + 1440)%1440;
+  const fin=(ini+119)%1440;
+  const f=m=>{ const h24=Math.floor(m/60), mi=m%60; let h12=h24%12; if(h12===0)h12=12;
+    return {t:h12+':'+String(mi).padStart(2,'0'), suf:h24>=12?'pm':'am'}; };
+  const a=f(ini), b=f(fin);
+  return a.suf===b.suf ? `${a.t}–${b.t}${b.suf}` : `${a.t}${a.suf}–${b.t}${b.suf}`;
+}
+Object.values(PERFILES).forEach(p=>p.HORAS.forEach((h,i)=>{ h.h=horaCivilRama(i); }));
+
+// ══════════════════════════════════════════════════════════════════
+// PERSONA ADICIONAL — cálculo automático de Ba Zi y perfil
+// ══════════════════════════════════════════════════════════════════
+const ELEM_ES=['Madera','Fuego','Tierra','Metal','Agua'];
+const ELEM_EN=['Wood','Fire','Earth','Metal','Water'];
+const ELEM_EMO=['🌳','🔥','🟤','⚪','💧'];
+const ANIMAL_EN=['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+const RAMA_ELEM=[4,2,0,0,2,1,1,2,3,3,2,4]; // elemento principal de cada rama
+const stemEl=s=>Math.floor(s/2);
+const elProduces=e=>(e+1)%5, elControls=e=>(e+2)%5, elResource=e=>(e+4)%5, elPower=e=>(e+3)%5;
+const ELEM_TRIO={Madera:0,Fuego:1,Tierra:2,Metal:3,Agua:4};
+const NOBLE_BY_STEM={0:[1,7],1:[0,8],2:[11,9],3:[11,9],4:[1,7],5:[0,8],6:[1,7],7:[2,6],8:[5,3],9:[5,3]};
+const WEN_BY_STEM=[5,6,8,9,8,9,11,0,2,3];  // 文昌
+const LU_BY_STEM =[2,3,5,6,5,6,8,9,11,0];  // 禄神
+const YIMA_BY_ELEM={Fuego:8,Madera:5,Metal:11,Agua:2};
+const PB_BY_ELEM  ={Fuego:3,Madera:0,Metal:6,Agua:9};
+const COMBO6_EL={'0-1':2,'2-11':0,'3-10':1,'4-9':3,'5-8':4,'6-7':1}; // elemento que produce cada 六合
+const GUA_NAME={1:'坎',2:'坤',3:'震',4:'巽',6:'乾',7:'兑',8:'艮',9:'离'};
+const DIR_ES={N:'Norte',NE:'Noreste',E:'Este',SE:'Sureste',S:'Sur',SW:'Suroeste',W:'Oeste',NW:'Noroeste'};
+const DIR_ARW={N:'↑',NE:'↗',E:'→',SE:'↘',S:'↓',SW:'↙',W:'←',NW:'↖'};
+// [生气 +4, 天医 +3, 延年 +2, 伏位 +1]
+const GUA_DIRS={1:['SE','E','S','N'],2:['NE','W','NW','SW'],3:['S','N','SE','E'],4:['N','S','E','SE'],
+                6:['W','NE','SW','NW'],7:['NW','SW','NE','W'],8:['SW','NW','W','NE'],9:['E','SE','N','S']};
+
+// Longitud solar aparente (precisión ≈ 0.01° ≈ 15 min)
+function sunLon(jd){
+  const T=(jd-2451545)/36525;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T;
+  const M=(357.52911+35999.05029*T-0.0001537*T*T)*Math.PI/180;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M)+(0.019993-0.000101*T)*Math.sin(2*M)+0.000289*Math.sin(3*M);
+  const om=(125.04-1934.136*T)*Math.PI/180;
+  return (((L0+C-0.00569-0.00478*Math.sin(om))%360)+360)%360;
+}
+// Los 12 términos solares 节 que inician cada mes Ba Zi: [λ, mes aprox, día aprox, rama del mes]
+const JIE=[[285,1,6,1],[315,2,4,2],[345,3,6,3],[15,4,5,4],[45,5,5,5],[75,6,6,6],
+           [105,7,7,7],[135,8,7,8],[165,9,8,9],[195,10,8,10],[225,11,7,11],[255,12,7,0]];
+function termMs(year,lam,mes,dia){
+  let jd=Date.UTC(year,mes-1,dia,12)/86400000+2440587.5;
+  for(let i=0;i<8;i++){ const diff=((lam-sunLon(jd)+540)%360)-180; jd+=diff/360*365.2422; }
+  return (jd-2440587.5)*86400000;
+}
+function eventosJie(y0,y1){
+  const ev=[];
+  for(let y=y0;y<=y1;y++) for(const [lam,mes,dia,br] of JIE) ev.push({t:termMs(y,lam,mes,dia),br,lichun:lam===315,y});
+  return ev.sort((a,b)=>a.t-b.t);
+}
+
+function calcularBazi(d){
+  const [Y,Mo,D]=d.fecha.split('-').map(Number), [H,Mi]=d.hora.split(':').map(Number);
+  const civilMs=Date.UTC(Y,Mo-1,D,H,Mi);
+  const utcMs=civilMs-d.huso*3600000;
+  const ev=eventosJie(Y-1,Y+1);
+  let idx=0; for(let i=0;i<ev.length;i++){ if(ev[i].t<=utcMs) idx=i; }
+  const mb=ev[idx].br;
+  let by=Y; for(let i=idx;i>=0;i--){ if(ev[i].lichun){ by=ev[i].y; break; } }
+  const ys=((by-4)%10+10)%10, yb=((by-4)%12+12)%12;
+  const ms=((ys%5)*2+2+((mb-2+12)%12))%10;
+  // Hora solar verdadera (día cambia a las 23:00 solar)
+  const corrMin=(d.lon-d.huso*15)*4;
+  const sd=new Date(civilMs+corrMin*60000);
+  let dy=sd.getUTCFullYear(), dm=sd.getUTCMonth()+1, dd=sd.getUTCDate();
+  const sh=sd.getUTCHours();
+  if(sh>=23){ const nx=new Date(Date.UTC(dy,dm-1,dd+1)); dy=nx.getUTCFullYear(); dm=nx.getUTCMonth()+1; dd=nx.getUTCDate(); }
+  const dayStem=getDayStem(dy,dm,dd), dayBr=getDayBranch(dy,dm,dd);
+  const hb=Math.floor(((sh+1)%24)/2);
+  const hs=((dayStem%5)*2+hb)%10;
+  return {year:[ys,yb],month:[ms,mb],day:[dayStem,dayBr],hour:[hs,hb],by,utcMs,ev,idx,corrMin};
+}
+
+function calcularSuerte(c,gen){
+  const yang=c.year[0]%2===0;
+  const adelante=(yang&&gen==='M')||(!yang&&gen==='F');
+  const target=adelante?c.ev[c.idx+1]:c.ev[c.idx];
+  const dias=Math.abs(target.t-c.utcMs)/86400000;
+  const edad=dias/3, ANIO=365.2422*86400000;
+  const inicio=c.utcMs+edad*ANIO;
+  const ref=Date.UTC(2026,6,1);
+  const k=Math.floor((ref-inicio)/(10*ANIO))+1;
+  if(k<1) return {txt:`Aún no inicia (empieza a los ~${edad.toFixed(1)} años)`, br:null};
+  const dir=adelante?1:-1;
+  const st=(((c.month[0]+dir*k)%10)+10)%10, br=(((c.month[1]+dir*k)%12)+12)%12;
+  const fin=new Date(inicio+k*10*ANIO).getUTCFullYear();
+  return {txt:`${STEMS_C[st]}${RAMA_C[br]} hasta ~${fin}`, br, st};
+}
+
+function evaluarFuerza(c){
+  const de=stemEl(c.day[0]);
+  const apoya=e=>e===de||e===elResource(de);
+  const items=[[stemEl(c.year[0]),1],[stemEl(c.month[0]),1],[stemEl(c.hour[0]),1],
+    [RAMA_ELEM[c.year[1]],1],[RAMA_ELEM[c.day[1]],1.5],[RAMA_ELEM[c.hour[1]],1],[RAMA_ELEM[c.month[1]],3]];
+  let a=0,t=0; for(const [e,w] of items){ t+=w; if(apoya(e)) a+=w; }
+  return {apoyo:a,total:t,fuerte:a/t>=0.5};
+}
+
+function redGua(n){ while(n>9) n=String(n).split('').reduce((a,ch)=>a+(+ch),0); return n; }
+function calcGua(by,gen,over){
+  let g=over?+over:0;
+  if(!g){
+    const s=redGua(by);
+    g=gen==='M'?(by>=2000?9-s:10-s):(by>=2000?s+6:s+5);
+    g=redGua(g); if(g<=0) g=9;
+    if(g===5) g=gen==='M'?2:8;
+  }
+  if(g===5) g=gen==='M'?2:8;
+  return g;
+}
+
+// Puntúa una rama (día del calendario u hora) contra la carta, sensible a elementos favorables
+function puntuarRama(b,ctx){
+  const c=ctx.carta, db=c.day[1], pil=[c.hour[1],c.day[1],c.month[1],c.year[1]];
+  let s=0; const r=[];
+  if(CLASHES[b]===db){ s-=4; r.push('Choca tu pilar Día'); }
+  else if(CLASHES[b]===c.month[1]){ s-=3; r.push('Choca tu pilar Mes'); }
+  else if(CLASHES[b]===c.year[1]||CLASHES[b]===c.hour[1]){ s-=1; r.push('Choca pilar Año/Hora'); }
+  if(b===db){ s-=3; r.push(PUNISH_SELF.has(b)?'Auto-castigo con tu Día':'Repite tu rama Día (伏吟)'); }
+  if(HARMS[b]===db){ s-=1; r.push('Daño con tu Día'); }
+  if(DESTRUCTION[b]===db){ s-=1; r.push('Destrucción con tu Día'); }
+  // Combinación 六合 — solo suma si el elemento que produce es favorable
+  const pesoC=COMBO6[b]===db?3:COMBO6[b]===c.month[1]?2:(COMBO6[b]===c.year[1]||COMBO6[b]===c.hour[1])?1:0;
+  if(pesoC){
+    const key=[b,COMBO6[b]].sort((x,y)=>x-y).join('-');
+    const el=COMBO6_EL[key];
+    if(el!==undefined&&ctx.desEl.includes(el)){ s-=1; r.push(`Combina → ${ELEM_ES[el]} (desfav ⚠️)`); }
+    else { s+=pesoC; r.push(el!==undefined?`Combina → ${ELEM_ES[el]} (fav ✅)`:'Combina con tu carta'); }
+  }
+  // Trío 三合 con tu rama Día — solo suma si el elemento es favorable
+  for(const g of COMBO3){
+    if(g.ramas.includes(b)&&g.ramas.includes(db)&&b!==db){
+      const el=ELEM_TRIO[g.elemento];
+      if(ctx.desEl.includes(el)){ s-=2; r.push(`Trío ${g.nombre.split(' ')[0]} → ${g.elemento} (desfav ⚠️)`); }
+      else { s+=2; r.push(`Trío ${g.nombre.split(' ')[0]} → ${g.elemento} (fav ✅)`); }
+    }
+  }
+  if(ctx.nobles.includes(b)){ s+=2; r.push('Noble 贵人'); }
+  const eb=RAMA_ELEM[b];
+  if(ctx.favEl.includes(eb)) s+=1; else if(ctx.desEl.includes(eb)) s-=1;
+  return {s,r};
+}
+
+function analizarMesPersona(m,ctx){
+  const mes=MESES.find(x=>x.m===m);
+  const st=mes.stemIdx, br=(m===12)?0:m;
+  const sf=ctx.FAV.has(st)?1:ctx.DES.has(st)?-1:0;
+  const rr=puntuarRama(br,ctx);
+  const total=sf+rr.s;
+  const alerta=total>=4?'✅ EXCELENTE':total>=2?'✅ BUENO':total>=-1?'MIXTO':total>=-3?'⚠️ DIFÍCIL':'⚠️ EXIGENTE';
+  const color=total>=2?'#4A6A15':total>=-1?'#8B6914':'#C04040';
+  const sTxt=sf>0?'fav ✅':sf<0?'desfav ⚠️':'neutro';
+  const nota=`${mes.calMes.split(' ')[0]}: Tronco ${STEMS_C[st]} ${ELEM_ES[stemEl(st)]} (${sTxt}) + Rama ${RAMA_C[br]} ${RAMA_ES[br]}${rr.r.length?' — '+rr.r.join(', '):''}.`;
+  return {alerta,color,nota};
+}
+
+function construirPerfil(d){
+  const c=calcularBazi(d);
+  const [ds,db]=c.day, de=stemEl(ds);
+  const f=evaluarFuerza(c);
+  const fuerte=d.fuerza==='fuerte'?true:d.fuerza==='debil'?false:f.fuerte;
+  const favEl=fuerte?[elProduces(de),elControls(de),elPower(de)]:[de,elResource(de)];
+  const desEl=[0,1,2,3,4].filter(e=>!favEl.includes(e));
+  const stemsOf=els=>new Set(els.flatMap(e=>[2*e,2*e+1]));
+  const FAV=stemsOf(favEl), DES=stemsOf(desEl);
+  const nobles=NOBLE_BY_STEM[ds];
+  const ctx={carta:c,favEl,desEl,FAV,DES,nobles};
+  const par=(p)=>`${STEMS_C[p[0]]}${RAMA_C[p[1]]}`;
+  const parEs=(p)=>`${ELEM_ES[stemEl(p[0])]}-${RAMA_ES[p[1]]}`;
+  const orden=[c.hour,c.day,c.month,c.year];
+
+  const P_Q={}; const HORAS=[];
+  for(let b=0;b<12;b++){
+    const {s,r}=puntuarRama(b,ctx);
+    P_Q[b]=s<=-3?'evit':s>=3?'exce':s>=1?'buen':'neut';
+    const rating=s<=-3?'evit':s>=5?'triple':s>=3?'exce':s>=1?'buen':'neut';
+    HORAS.push({rama:RAMA_C[b],es:RAMA_ES[b],h:horaCivilRama(b),rating,
+      razon:(rating==='triple'?'⭐ ':'')+(r.join(' + ')||'Neutro')});
+  }
+  const lp=calcularSuerte(c,d.genero);
+  const gua=calcGua(c.by,d.genero,d.gua);
+  const dirs=GUA_DIRS[gua];
+  const wealthEl=elControls(de);
+  const grupo=COMBO3.find(g=>g.ramas.includes(db));
+  const cw={}; grupo.ramas.filter(r=>r!==db).forEach(r=>cw[r]=true);
+  const grDir=COMBO3DIR.find(g=>g.ramas.includes(db));
+  if(grDir) grDir.ramas.filter(r=>r!==db).forEach(r=>cw[r]=true);
+  const dirTxt=(i)=>`${DIR_ES[dirs[i]]}`;
+  const fil=(id,lb,oi,i,tip)=>({id,lb,oi,icon:DIR_ARW[dirs[i]],dir:`${dirTxt(i)} (${['生气 +4','天医 +3','延年 +2','伏位 +1'][i]})`,tip});
+  const FILTROS_DIR=[
+    fil('all','Todos',null,0,`Dirección principal de riqueza — Gua ${gua}`),
+    fil('firma','✍️ Firmas',[8,4],0,`Oriéntate hacia ${dirTxt(0)} al firmar`),
+    fil('lanzar','🚀 Lanzar',[10,8],0,`${dirTxt(0)} — máxima energía para lanzamientos`),
+    fil('captacion','💰 Captación',[10,9,8],0,`Capta facing ${dirTxt(0)} — Sheng Qi`),
+    fil('campanas','📣 Campañas',[10,2,8],1,`${dirTxt(1)} = Tian Yi — dinero y salud`),
+    fil('cobros','💵 Cobros',[9,2,8],2,`${dirTxt(2)} activa Yan Nian — cobros`),
+  ];
+  const lbl8=['Generador de Riqueza','Dinero y Salud','Relaciones y Equipo','Estabilidad y Calma'];
+  const perfil8M=dirs.map((k,i)=>`<div style="color:#DDD">${DIR_ARW[k]} <b style="color:var(--gold)">${DIR_ES[k]}</b> — ${lbl8[i]} <span style="opacity:.5;font-size:9px">${['生气 +4','天医 +3','延年 +2','伏位 +1'][i]}</span></div>`).join('');
+
+  const TEMA_DIA={};
+  const cfg={
+    ejec:{icon:'⚡',nombre:'Ejecución',color:'#3A7A8A',tail:'Día de movimiento y colaboración. Muévete, capta y ejecuta.'},
+    crea:{icon:'🎨',nombre:'Creación',color:'#5A7A2A',tail:'Crea contenido y desarrolla proyectos nuevos.'},
+    rique:{icon:'💰',nombre:'Riqueza',color:'#8B6914',tail:'Activación de riqueza — captaciones, cierres y estrategia económica.'},
+    sana:{icon:'🌿',nombre:'Sanación',color:'#1A5A6A',tail:'Estructura, disciplina y resolución de conflictos.'},
+    persp:{icon:'💡',nombre:'Perspicacia',color:'#4A148C',tail:'Claridad mental elevada. Planifica, estudia el mercado y decide.'},
+  };
+  for(let s=0;s<10;s++){
+    const e=stemEl(s), mp=(s%2)===(ds%2); let t,god;
+    if(e===de){ t=cfg.ejec; god=mp?'Amigo':'Robo de Riqueza'; }
+    else if(e===elProduces(de)){ t=cfg.crea; god=mp?'Comiendo Dios':'Oficial Herido'; }
+    else if(e===elControls(de)){ t=cfg.rique; god=mp?'Dinero Indirecto':'Dinero Directo'; }
+    else if(e===elPower(de)){ t=cfg.sana; god=mp?'7 Muertes':'Oficial Directo'; }
+    else { t=cfg.persp; god=mp?'Recurso Indirecto':'Recurso Directo'; }
+    TEMA_DIA[s]={icon:t.icon,nombre:t.nombre,color:t.color,desc:`${STEMS_ES[s]} activa tu ${god}. ${t.tail}`};
+  }
+  const MESES_DATA={}; for(let m=5;m<=12;m++) MESES_DATA[m]=analizarMesPersona(m,ctx);
+
+  const id=d.id||('p3_'+Date.now().toString(36));
+  const corr=Math.round(c.corrMin);
+  return {
+    custom:true, id, datos:d,
+    nombre:d.nombre,
+    bazi:orden.map(par).join(' · '),
+    baziEs:orden.map(parEs).join(' · '),
+    combo:grupo.nombre.replace('-','+').replace('-','+'),
+    dayMaster:`${par(c.day)} ${ELEM_EN[de]} ${ANIMAL_EN[db]}`,
+    gua:`${gua} ${GUA_NAME[gua]}`,
+    luckyPillar:lp.txt,
+    riqueza:`${ELEM_EMO[wealthEl]} ${ELEM_ES[wealthEl]} · ${STEMS_C[2*wealthEl]} y ${STEMS_C[2*wealthEl+1]}`,
+    nobles:nobles.map(b=>`${RAMA_C[b]} ${RAMA_ES[b]}`).join(' · '),
+    flor:`${RAMA_C[PB_BY_ELEM[grupo.elemento]]} ${RAMA_ES[PB_BY_ELEM[grupo.elemento]]}`,
+    tabla:'tong_shu_diario',
+    csvNombre:`Tong_Shu_Diario_${d.nombre.replace(/[^A-Za-z0-9]+/g,'_')}_2026.csv`,
+    notaAuto:`Perfil calculado automáticamente (estimación). Maestro del Día ${ELEM_ES[de]} ${fuerte?'fuerte':'débil'}${d.fuerza!=='auto'?' (ajuste manual)':` (apoyo ${f.apoyo}/${f.total})`} · Favorables: ${favEl.map(e=>ELEM_ES[e]).join(', ')} · Desfavorables: ${desEl.map(e=>ELEM_ES[e]).join(', ')}. Hora solar verdadera: ${corr>=0?'+':''}${corr} min respecto a la hora civil. Valida la carta con tu maestra.`,
+    PILARES:[
+      {rama:c.hour[1],ch:RAMA_C[c.hour[1]],es:RAMA_ES[c.hour[1]],area:'Hora',areaEs:'EI · Proyectos · Inversión'},
+      {rama:c.day[1], ch:RAMA_C[c.day[1]], es:RAMA_ES[c.day[1]], area:'Día★',areaEs:'Tú · Salud · Pareja'},
+      {rama:c.month[1],ch:RAMA_C[c.month[1]],es:RAMA_ES[c.month[1]],area:'Mes',areaEs:'Trabajo · Carrera · Padres'},
+      {rama:c.year[1],ch:RAMA_C[c.year[1]],es:RAMA_ES[c.year[1]],area:'Año',areaEs:'Redes · Imagen · Industria'},
+    ],
+    P_Q,
+    IS_NOBLEMAN:Object.fromEntries(nobles.map(b=>[b,true])),
+    IS_WEALTH:{[2*wealthEl]:true,[2*wealthEl+1]:true},
+    IS_LP:lp.br===null?{}:{[lp.br]:true},
+    IS_PB:{[PB_BY_ELEM[grupo.elemento]]:true},
+    IS_CW:cw,
+    IS_WCL:{[WEN_BY_STEM[ds]]:true,[LU_BY_STEM[ds]]:true},
+    IS_YIMA:{[YIMA_BY_ELEM[grupo.elemento]]:true},
+    HORAS, FILTROS_DIR,
+    FAV_ELEM:FAV, DESFAV_ELEM:DES, FAV_TRIO:FAV, DESFAV_TRIO:DES,
+    MESES_DATA, MESES_NOTA:{}, TEMA_DIA, perfil8M,
+  };
+}
+
+// ── Persistencia local de la persona adicional ──
+const LS_P3='tongshu_persona_extra';
+function cargarPersonaExtra(){
+  try{
+    const raw=localStorage.getItem(LS_P3); if(!raw) return;
+    const d=JSON.parse(raw);
+    const p=construirPerfil(d);
+    PERFILES[p.id]=p;
+  }catch(e){ console.warn('Persona adicional no pudo cargarse:',e); }
+}
+function personaExtraActual(){ return Object.values(PERFILES).find(p=>p.custom); }
+
+// ── Modal ──
+function leerFormPersona(){
+  const v=id=>document.getElementById(id).value;
+  const ex=personaExtraActual();
+  return {
+    id:ex?ex.id:undefined,
+    nombre:v('pp-nombre').trim(), genero:v('pp-genero'), fecha:v('pp-fecha'), hora:v('pp-hora'),
+    lugar:v('pp-lugar').trim(), lon:parseFloat(v('pp-lon')), huso:parseFloat(v('pp-huso')),
+    fuerza:v('pp-fuerza'), gua:v('pp-gua')
+  };
+}
+function validarPersona(d){
+  if(!d.nombre) return 'Escribe un nombre.';
+  if(!d.fecha||!d.hora) return 'Ingresa fecha y hora de nacimiento.';
+  const y=+d.fecha.slice(0,4); if(y<1900||y>2025) return 'La fecha debe estar entre 1900 y 2025.';
+  if(isNaN(d.lon)||isNaN(d.huso)) return 'Longitud y huso horario deben ser números.';
+  return '';
+}
+function actualizarPreviewPersona(){
+  const box=document.getElementById('pp-preview'), err=document.getElementById('pp-error');
+  err.textContent='';
+  const d=leerFormPersona();
+  if(!d.fecha||!d.hora||isNaN(d.lon)||isNaN(d.huso)){ box.textContent='Completa fecha y hora para ver la carta.'; return; }
+  try{
+    const p=construirPerfil({...d,nombre:d.nombre||'—'});
+    box.innerHTML=`<div style="font-size:15px;font-weight:700;letter-spacing:1px">${p.bazi}</div>
+      <div style="font-size:10px;color:var(--txt-s);margin:2px 0 6px">${p.baziEs}</div>
+      <div><b>${p.dayMaster}</b> · Gua ${p.gua} · Suerte: ${p.luckyPillar}</div>
+      <div style="font-size:10px;color:var(--txt-s);margin-top:6px">${p.notaAuto}</div>`;
+  }catch(e){ box.textContent='No se pudo calcular: '+e.message; }
+}
+function abrirModalPersona(editar){
+  const ex=personaExtraActual();
+  const set=(id,val)=>{ document.getElementById(id).value=val; };
+  const d=(editar&&ex)?ex.datos:{nombre:'',genero:'F',fecha:'',hora:'',lugar:'',lon:-71.5,huso:-5,fuerza:'auto',gua:''};
+  set('pp-nombre',d.nombre); set('pp-genero',d.genero); set('pp-fecha',d.fecha); set('pp-hora',d.hora);
+  set('pp-lugar',d.lugar||''); set('pp-lon',d.lon); set('pp-huso',d.huso); set('pp-fuerza',d.fuerza||'auto'); set('pp-gua',d.gua||'');
+  document.getElementById('pp-titulo').textContent=(editar&&ex)?'✎ Editar persona':'＋ Agregar persona';
+  document.getElementById('modal-persona').style.display='block';
+  actualizarPreviewPersona();
+}
+function cerrarModalPersona(){ document.getElementById('modal-persona').style.display='none'; }
+function guardarPersona(){
+  const d=leerFormPersona();
+  const msg=validarPersona(d);
+  const err=document.getElementById('pp-error');
+  if(msg){ err.textContent=msg; return; }
+  let p;
+  try{ p=construirPerfil(d); }catch(e){ err.textContent='No se pudo calcular: '+e.message; return; }
+  try{ localStorage.setItem(LS_P3,JSON.stringify({...d,id:p.id})); }catch(e){ console.warn('localStorage no disponible'); }
+  p.datos={...d,id:p.id};
+  PERFILES[p.id]=p;
+  cerrarModalPersona();
+  cambiarPersona(p.id);
+}
+async function eliminarPersona(){
+  const p=personaExtraActual(); if(!p) return;
+  if(!confirm(`¿Eliminar a ${p.nombre}? También se borrarán sus notas del diario.`)) return;
+  try{ if(db) await db.from('tong_shu_diario').delete().eq('persona',p.id); }catch(e){ console.warn('No se pudo borrar el diario:',e); }
+  try{ localStorage.removeItem(LS_P3); }catch(e){}
+  delete PERFILES[p.id];
+  cambiarPersona('zulema');
+}
+
+// ══════════════════════════════════════════════════════════════════
 // SUPABASE OPERACIONES — tabla unificada con campo persona
 // ══════════════════════════════════════════════════════════════════
 async function cargarEntradas(){
@@ -1382,7 +1774,7 @@ function renderDetalle(){
 
       ${d.rating!=='evit'?`
       <div class="horas-box">
-        <div class="horas-title">🕐 HORAS AUSPICIOSAS DEL DÍA</div>
+        <div class="horas-title">🕐 HORAS AUSPICIOSAS DEL DÍA <span style="font-size:8px;opacity:.6;font-weight:400">· hora solar verdadera Arequipa (−14 min)</span></div>
         <div class="horas-opt">
           ${horasOpt.map(h=>`
             <div class="hora-card" style="background:rgba(200,169,110,.2);border:1px solid rgba(200,169,110,.5)">
@@ -1583,7 +1975,10 @@ function renderSelector(){
         border:1px solid ${k===state.persona?'var(--gold)':'rgba(200,169,110,.2)'};
         color:${k===state.persona?'var(--gold)':'var(--txt-m)'}">
       ${PERFILES[k].nombre}
-    </button>`).join('');
+    </button>`).join('') + (personaExtraActual()?'':`
+    <button onclick="abrirModalPersona()"
+      style="padding:5px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:sans-serif;
+        background:transparent;border:1px dashed rgba(200,169,110,.5);color:var(--gold-l)">＋ Persona</button>`);
 }
 
 function renderPerfil(){
@@ -1634,7 +2029,13 @@ function renderPerfil(){
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:11px;font-family:sans-serif">
         ${p.perfil8M}
       </div>
-    </div>`;
+    </div>
+    ${p.custom?`
+    <div style="margin-top:8px;font-size:10px;color:var(--gold-l);opacity:.85;font-family:sans-serif;line-height:1.5">${p.notaAuto}</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="hdr-btn" style="margin-top:0" onclick="abrirModalPersona(true)">✎ Editar datos</button>
+      <button class="hdr-btn" style="margin-top:0;border-color:rgba(192,64,64,.6);color:#F4B0B0" onclick="eliminarPersona()">✕ Eliminar persona</button>
+    </div>`:''}`;
 }
 
 function renderAll(){
@@ -1783,6 +2184,7 @@ function toggleHistorial(){
 // INICIO
 // ══════════════════════════════════════════════════════════════════
 async function init(){
+  cargarPersonaExtra();
   const hoy=new Date();
   if(hoy.getFullYear()===2026){
     const m=hoy.getMonth()+1;
